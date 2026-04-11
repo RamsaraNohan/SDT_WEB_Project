@@ -1,0 +1,23 @@
+using BlindMatch.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace BlindMatch.Infrastructure.Configurations;
+
+public class SupervisorRevealConfiguration : IEntityTypeConfiguration<SupervisorReveal>
+{
+    public void Configure(EntityTypeBuilder<SupervisorReveal> builder)
+    {
+        builder.HasKey(sr => sr.Id);
+
+        builder.HasOne(sr => sr.Match)
+            .WithOne()
+            .HasForeignKey<SupervisorReveal>(sr => sr.MatchId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(sr => sr.SupervisorName).IsRequired().HasMaxLength(200);
+        builder.Property(sr => sr.SupervisorEmail).IsRequired().HasMaxLength(256);
+
+        builder.HasQueryFilter(sr => !sr.IsDeleted);
+    }
+}

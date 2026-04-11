@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #39b54a;    /* NSBM Green */
+  --color-secondary: #0054a6;  /* NSBM Academic Blue */
+  --color-background: #020617;
+  --color-card: #0f172a;
+  
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --primary: 145 52% 47%;
+    --secondary: 209 100% 33%;
+  }
+
+  body {
+    @apply bg-dashboard-gradient text-white antialiased selection:bg-primary/30 min-h-screen;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@utility glass-card {
+  @apply bg-card/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+}
+
+@utility hover-slide {
+  @apply transition-all duration-300 hover:translate-x-1;
+}
+
+.bg-dashboard-gradient {
+  background: radial-gradient(circle at top left, #0054a6 0%, #020617 40%, #39b54a20 100%);
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#39b54a] to-[#0054a6];
+}
+
+/* NSBM Branded Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #39b54a50;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #39b54a;
+}

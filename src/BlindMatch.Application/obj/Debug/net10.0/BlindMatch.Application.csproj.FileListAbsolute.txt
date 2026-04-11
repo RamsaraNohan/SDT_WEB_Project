@@ -1,0 +1,15 @@
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\bin\Debug\net10.0\BlindMatch.Application.deps.json
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\bin\Debug\net10.0\BlindMatch.Application.dll
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\bin\Debug\net10.0\BlindMatch.Application.pdb
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\bin\Debug\net10.0\BlindMatch.Domain.dll
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\bin\Debug\net10.0\BlindMatch.Domain.pdb
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.csproj.AssemblyReference.cache
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.AssemblyInfoInputs.cache
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.AssemblyInfo.cs
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.csproj.CoreCompileInputs.cache
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMat.B2612323.Up2Date
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.dll
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\refint\BlindMatch.Application.dll
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\BlindMatch.Application.pdb
+C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.Application\obj\Debug\net10.0\ref\BlindMatch.Application.dll

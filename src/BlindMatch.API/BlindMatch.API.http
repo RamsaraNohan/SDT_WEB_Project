@@ -1,0 +1,6 @@
+@BlindMatch.API_HostAddress = http://localhost:5259
+
+GET {{BlindMatch.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
