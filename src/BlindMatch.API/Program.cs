@@ -44,8 +44,12 @@ try
     }
 
     // 🔥 1. DATABASE & DI BRIDGE
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    var connectionStrings = builder.Configuration.GetSection("ConnectionStrings");
+    var connectionString = connectionStrings["DefaultConnection"] 
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+    // 🔥 PRE-START VALIDATION: Check for credentials to prevent silent timeouts
+    bool hasCredentials = connectionString.Contains("User ID") || connectionString.Contains("Password");
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BlindMatch.Infrastructure")));
@@ -97,11 +101,19 @@ try
         };
     });
 
+    // 🔥 2. NON-BLOCKING HANGFIRE
     builder.Services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UseSqlServerStorage(connectionString));
+        .UseSqlServerStorage(connectionString, new SqlServerStorageOptions 
+        { 
+            CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+            QueuePollInterval = TimeSpan.Zero,
+            UseRecommendedIsolationLevel = true,
+            DisableGlobalLocks = true // Safe for Azure SQL
+        }));
 
     builder.Services.AddHangfireServer();
 
@@ -150,6 +162,17 @@ try
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
+
+    // 🚀 THE INSTANT TRUTH-REPORTER (Prevents 500.37 Timeout)
+    if (!hasCredentials)
+    {
+        app.MapGet("/", () => Results.Problem(
+            detail: "Your connection string in the Azure Portal is missing 'User ID' or 'Password'. Please visit the Configuration tab and update ConnectionStrings:DefaultConnection.",
+            title: "Azure Configuration Error",
+            statusCode: 500));
+        app.Run();
+        return;
+    }
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
