@@ -9,6 +9,7 @@ using BlindMatch.Infrastructure.Security;
 using BlindMatch.API.Middleware;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;

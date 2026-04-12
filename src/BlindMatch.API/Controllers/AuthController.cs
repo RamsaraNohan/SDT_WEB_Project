@@ -49,7 +49,7 @@ public class AuthController : ControllerBase
             var jwtSecret = config["JwtSettings:Secret"];
             var jwtValid = !string.IsNullOrEmpty(jwtSecret) && jwtSecret.Length >= 32;
             var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
-                          ?? !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
+                          || !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
 
             return Ok(new {
                 DatabaseConfigured = dbPresent,
