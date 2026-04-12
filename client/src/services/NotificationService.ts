@@ -37,6 +37,11 @@ class NotificationService {
             await this.connection.start();
             console.log("SignalR Connected.");
         } catch (err) {
+            // 🛡️ AUTH GUARD: Stay silent if we just aren't logged in yet
+            if (err instanceof Error && err.message.includes("401")) {
+                console.warn("SignalR: Authentication pending (401). Waiting for Login.");
+                return;
+            }
             console.error("SignalR Connection Error: ", err);
         }
     }
