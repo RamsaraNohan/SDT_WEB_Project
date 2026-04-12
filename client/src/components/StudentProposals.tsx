@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Clock, CheckCircle2, AlertCircle, ExternalLink, Calendar, Tag } from 'lucide-react';
-import { ProposalStatus } from '../types/enums'; // We'll define this
 
 interface ProposalDto {
   id: string;

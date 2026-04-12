@@ -1,4 +1,4 @@
-export enum ProposalStatus {
+export const enum ProposalStatus {
     Draft = 0,
     Pending = 1,
     UnderReview = 2,
@@ -9,14 +9,14 @@ export enum ProposalStatus {
     Rejected = 7
 }
 
-export enum MatchStatus {
+export const enum MatchStatus {
     InterestExpressed = 0,
     Confirmed = 1,
     Cancelled = 2,
     Withdrawn = 3
 }
 
-export enum MeetingStatus {
+export const enum MeetingStatus {
     Scheduled = 0,
     Completed = 1,
     Cancelled = 2

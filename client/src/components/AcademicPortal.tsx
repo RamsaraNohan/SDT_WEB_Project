@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, FileText, Award, Send, Plus } from 'lucide-react';
+import { Calendar, Award, Send, Plus } from 'lucide-react';
 import api from '../api/axios';
 
 interface Meeting {

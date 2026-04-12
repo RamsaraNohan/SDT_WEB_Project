@@ -25,7 +25,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const { token, refreshToken, setAuth, clearAuth } = useAuthStore.getState();
+        const { token, refreshToken, setAuth } = useAuthStore.getState();
         
         const response = await axios.post(`${api.defaults.baseURL}/auth/refresh`, {
           token,

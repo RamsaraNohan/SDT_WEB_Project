@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../api/axios';
-import { LogIn, ShieldCheck, Mail, Lock, Loader2 } from 'lucide-react';
+import { LogIn, Mail, Lock, Loader2 } from 'lucide-react';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');

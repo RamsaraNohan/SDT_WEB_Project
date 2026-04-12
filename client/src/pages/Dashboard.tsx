@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { LogOut, LayoutDashboard, Send, Users, Activity, Settings, PlusCircle, Search } from 'lucide-react';
+import { LogOut, LayoutDashboard, Send, Users, Activity, Settings, PlusCircle, Search, FileText } from 'lucide-react';
 import ProposalWizard from '../components/ProposalWizard';
 import StudentProposals from '../components/StudentProposals';
 import SupervisorExplore from '../components/SupervisorExplore';
