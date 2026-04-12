@@ -99,8 +99,10 @@ builder.Services.AddHangfire(config => config
 
 builder.Services.AddHangfireServer();
 
-// 🔥 2. AZURE MANAGED SIGNALR SERVICE
-var signalRConnectionString = builder.Configuration["Azure:SignalR:ConnectionString"];
+// 🔥 2. AZURE MANAGED SIGNALR SERVICE (Safe check for typos)
+var signalRConnectionString = builder.Configuration["Azure:SignalR:ConnectionString"] 
+                            ?? builder.Configuration["Azure:SignalR:ConnectionStrng"]; // Support portal typo
+
 if (!string.IsNullOrEmpty(signalRConnectionString))
 {
     builder.Services.AddSignalR().AddAzureSignalR(signalRConnectionString);
