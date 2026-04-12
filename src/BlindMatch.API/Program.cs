@@ -43,25 +43,21 @@ try
         Log.Error("❌ CRITICAL: JWT Secret is MISSING or too short (Min 32 chars). Check your Azure App Service Settings.");
     }
 
+    // 🔥 1. DATABASE & DI BRIDGE
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-    // 🔥 1. CONNECTION STRING VALIDATION GUARD
-    if (!connectionString.Contains("User ID", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("Password", StringComparison.OrdinalIgnoreCase))
-    {
-        Log.Warning("⚠️ WARNING: Connection string appears to be missing User ID or Password. Check Azure App Service Settings.");
-    }
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BlindMatch.Infrastructure")));
 
+    // Bridge the Interface to the Class
     builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
+    // 🔥 2. IDENTITY ENGINE
     builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
         options.Password.RequiredLength = 8;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
