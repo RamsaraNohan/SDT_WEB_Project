@@ -21,10 +21,9 @@ public static class DatabaseSeeder
 
         // 2. Seed Admin User
         var adminEmail = "admin@blindmatch.edu";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-        if (adminUser == null)
+        if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            adminUser = new ApplicationUser
+            var adminUser = new ApplicationUser
             {
                 UserName = adminEmail,
                 Email = adminEmail,
@@ -37,38 +36,97 @@ public static class DatabaseSeeder
             await userManager.AddToRoleAsync(adminUser, "ModuleLeader");
         }
 
-        // 3. Seed Research Areas (Expanded based on Curriculum)
+        // 3. Seed Research Areas
         if (!await context.ResearchAreas.AnyAsync())
         {
             var areas = new[]
             {
                 "Artificial Intelligence", "Machine Learning", "Web Development", 
                 "Mobile Development", "Cloud Computing", "Cybersecurity", 
-                "Data Science", "IoT", "Software Engineering", 
-                "Algorithms and Data Structures", "Database Management Systems",
-                "Human-Computer Interaction", "Computer Graphics & Visualization",
-                "Parallel & Distributed Computing", "Big Data Analytics",
-                "Software Architecture", "Cryptography", "Enterprise Application Development"
+                "Data Science", "Software Engineering", "Enterprise Systems"
             };
-            
-            foreach (var areaName in areas)
+            foreach (var area in areas)
             {
-                await context.ResearchAreas.AddAsync(new ResearchArea { Name = areaName });
+                await context.ResearchAreas.AddAsync(new ResearchArea { Name = area });
+            }
+            await context.SaveChangesAsync();
+        }
+
+        var allAreas = await context.ResearchAreas.ToListAsync();
+        var password = "NSBM_Secure_2026!";
+
+        // 4. Seed 5 Supervisors
+        var supervisors = new List<ApplicationUser>();
+        for (int i = 1; i <= 5; i++)
+        {
+            var email = $"supervisor-{i}@nsbm.ac.lk";
+            if (await userManager.FindByEmailAsync(email) == null)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = $"Prof. Academic {i}",
+                    Department = "School of Computing",
+                    IsActive = true,
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(user, password);
+                await userManager.AddToRoleAsync(user, "Supervisor");
+                supervisors.Add(user);
+
+                // Add Expertise for each supervisor
+                await context.SupervisorExpertise.AddAsync(new SupervisorExpertise 
+                { 
+                    SupervisorId = user.Id, 
+                    ResearchAreaId = allAreas[i % allAreas.Count].Id 
+                });
             }
         }
 
-        // 4. Seed Deadline Settings
-        if (!await context.DeadlineSettings.AnyAsync())
+        // 5. Seed 15 Students
+        var students = new List<ApplicationUser>();
+        for (int i = 1; i <= 15; i++)
         {
-            var settings = new DeadlineSettings
+            var email = $"student-{i}@nsbm.ac.lk";
+            if (await userManager.FindByEmailAsync(email) == null)
             {
-                Id = 1,
-                ProposalOpenAt = DateTime.UtcNow.AddDays(-7),
-                ProposalCloseAt = DateTime.UtcNow.AddMonths(1),
-                FinalSubmissionDeadline = DateTime.UtcNow.AddMonths(6),
-                MaxProjectsPerSupervisor = 4
-            };
-            await context.DeadlineSettings.AddAsync(settings);
+                var user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = $"Student Name {i}",
+                    IsGroupLead = i > 10, // last 5 are group leads
+                    IsActive = true,
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(user, password);
+                await userManager.AddToRoleAsync(user, "Student");
+                students.Add(user);
+            }
+        }
+
+        // 6. Seed 7 Proposals (4 Individual, 3 Group)
+        if (!await context.Proposals.AnyAsync())
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                var isGroup = i >= 4;
+                var student = isGroup ? students[10 + (i-4)] : students[i];
+                
+                var proposal = new Proposal
+                {
+                    AnonymousCode = $"PROP-2026-{(i+1):D3}",
+                    Title = isGroup ? $"Group Innovation Project {i}" : $"Research Thesis {i}",
+                    Abstract = "This is a comprehensive research abstract demonstrating the production capabilities of the NSBM Project Tracker.",
+                    TechStack = "C#, .NET 10, React, Azure",
+                    Status = (BlindMatch.Domain.Enums.ProposalStatus)(i % 4), // Mix of Draft, Published, etc.
+                    StudentId = student.Id,
+                    ResearchAreaId = allAreas[i % allAreas.Count].Id,
+                    CreatedAt = DateTime.UtcNow.AddDays(-i)
+                };
+                await context.Proposals.AddAsync(proposal);
+            }
         }
 
         await context.SaveChangesAsync();

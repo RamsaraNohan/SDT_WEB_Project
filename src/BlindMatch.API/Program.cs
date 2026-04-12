@@ -157,4 +157,24 @@ app.UseHangfireDashboard();
 app.MapControllers();
 app.MapHub<BlindMatch.API.Hubs.RevealHub>("/hubs/reveal");
 
+// 🔥 8. ACTIVATE PRODUCTION SEEDER
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+        
+        await context.Database.MigrateAsync();
+        await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
 app.Run();
