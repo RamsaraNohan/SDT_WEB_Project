@@ -131,7 +131,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 🔥 4. ENABLE CORS
+// 🔥 4. ENABLE ROUTING & CORS
+app.UseRouting();
 app.UseCors("AllowNSBMPortal");
 
 // 🔥 5. OBSERVABILITY MIDDLEWARE
