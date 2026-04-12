@@ -46,6 +46,12 @@ try
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+    // 🔥 1. CONNECTION STRING VALIDATION GUARD
+    if (!connectionString.Contains("User ID", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("Password", StringComparison.OrdinalIgnoreCase))
+    {
+        Log.Warning("⚠️ WARNING: Connection string appears to be missing User ID or Password. Check Azure App Service Settings.");
+    }
+
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BlindMatch.Infrastructure")));
 
