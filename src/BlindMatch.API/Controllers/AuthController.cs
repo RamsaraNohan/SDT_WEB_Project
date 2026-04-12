@@ -43,18 +43,32 @@ public class AuthController : ControllerBase
     [HttpGet("diagnostic")]
     public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config)
     {
-        var dbPresent = !string.IsNullOrEmpty(config.GetConnectionString("DefaultConnection"));
-        var jwtSecret = config["JwtSettings:Secret"];
-        var jwtValid = !string.IsNullOrEmpty(jwtSecret) && jwtSecret.Length >= 32;
-        var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]);
+        try 
+        {
+            var dbPresent = !string.IsNullOrEmpty(config.GetConnectionString("DefaultConnection"));
+            var jwtSecret = config["JwtSettings:Secret"];
+            var jwtValid = !string.IsNullOrEmpty(jwtSecret) && jwtSecret.Length >= 32;
+            var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
+                          ?? !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
 
-        return Ok(new {
-            DatabaseConfigured = dbPresent,
-            JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
-            JwtSecretValidLength = jwtValid,
-            SignalRConfigured = signalR,
-            Note = "JWT Secret MUST be at least 32 characters long."
-        });
+            return Ok(new {
+                DatabaseConfigured = dbPresent,
+                JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
+                JwtSecretValidLength = jwtValid,
+                SignalRConfigured = signalR,
+                Status = "Audit Layer Active",
+                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+            });
+        }
+        catch (Exception ex)
+        {
+            return Ok(new {
+                Status = "Critical Crash in Diagnostic",
+                Error = ex.Message,
+                Details = "Is your database password missing from the Azure Portal?",
+                Inner = ex.InnerException?.Message
+            });
+        }
     }
 
     [HttpPost("refresh")]
