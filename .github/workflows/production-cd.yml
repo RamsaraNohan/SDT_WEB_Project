@@ -25,7 +25,7 @@ jobs:
 
     # 🔥 NEW: SELF-CONTAINED PUBLISH (Ensures .NET 10 works on Azure)
     - name: Publish API
-      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x86 --self-contained true -o ./publish
+      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x64 --self-contained true -o ./publish
 
     # 🔥 MANDATORY TEST GATE
     - name: Run Tests
@@ -58,7 +58,7 @@ jobs:
         dotnet-version: 10.0.x
     
     - name: Final Publish
-      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x86 --self-contained true -o ./publish
+      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x64 --self-contained true -o ./publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
