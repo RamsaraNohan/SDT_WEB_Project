@@ -104,31 +104,23 @@ builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+// 🔥 3. PRODUCTION CORS POLICY (Industry Standard for SignalR)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://lemon-wave-05930bd00.7.azurestaticapps.net")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // ⚠️ REQUIRED FOR SIGNALR
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-// 🔥 1. THE IRON BRIDGE (Absolute Trust Middleware)
-// This is the strongest possible CORS bypass for Azure App Service.
-app.Use(async (context, next) =>
-{
-    // 🔥 ABSOLUTE FORCE: Overwrite any Azure defaults with our trust policy
-    context.Response.Headers["Access-Control-Allow-Origin"] = "https://lemon-wave-05930bd00.7.azurestaticapps.net";
-    context.Response.Headers["Access-Control-Allow-Headers"] = "*";
-    context.Response.Headers["Access-Control-Allow-Methods"] = "*";
-    context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
-
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.StatusCode = 200;
-        await context.Response.WriteAsync("OK");
-        return;
-    }
-
-    await next();
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -138,7 +130,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// 🔥 4. ENABLE ROUTING & CORS (Correct Standard Order)
 app.UseRouting();
+app.UseCors("AllowFrontend");
 
 // 🔥 5. OBSERVABILITY MIDDLEWARE
 app.UseMiddleware<CorrelationIdMiddleware>();
