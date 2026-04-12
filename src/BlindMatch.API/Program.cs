@@ -108,19 +108,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔥 3. PRODUCTION CORS POLICY (Trusting NSBM Portal)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowNSBMPortal", policy =>
-    {
-        policy.WithOrigins("https://lemon-wave-05930bd00.7.azurestaticapps.net")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
-});
-
 var app = builder.Build();
+
+// 🔥 1. ABSOLUTE PRIORITY: CORS & PREFLIGHT
+// Placing this at the very top ensures Pre-flight (OPTIONS) requests never fail.
+app.UseCors(policy => policy
+    .SetIsOriginAllowed(origin => true) // Highly robust for Azure SWA / App Service connectivity
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -130,10 +126,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// 🔥 4. ENABLE ROUTING & CORS
 app.UseRouting();
-app.UseCors("AllowNSBMPortal");
 
 // 🔥 5. OBSERVABILITY MIDDLEWARE
 app.UseMiddleware<CorrelationIdMiddleware>();

@@ -8,7 +8,7 @@ class NotificationService {
         if (this.connection) return;
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl('/hubs/reveal')
+            .withUrl('https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/hubs/reveal')
             .withAutomaticReconnect()
             .build();
 
