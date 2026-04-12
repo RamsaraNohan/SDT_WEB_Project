@@ -110,19 +110,20 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 🔥 1. THE NUCLEAR CORS BRIDGE (Manual Header Injection)
-// This bypasses Azure internal conflicts by force-injecting headers into every response.
+// 🔥 1. THE IRON BRIDGE (Absolute Trust Middleware)
+// This is the strongest possible CORS bypass for Azure App Service.
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://lemon-wave-05930bd00.7.azurestaticapps.net");
-    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Correlation-Id");
-    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+    // 🔥 ABSOLUTE FORCE: Overwrite any Azure defaults with our trust policy
+    context.Response.Headers["Access-Control-Allow-Origin"] = "https://lemon-wave-05930bd00.7.azurestaticapps.net";
+    context.Response.Headers["Access-Control-Allow-Headers"] = "*";
+    context.Response.Headers["Access-Control-Allow-Methods"] = "*";
+    context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
 
     if (context.Request.Method == "OPTIONS")
     {
         context.Response.StatusCode = 200;
-        await context.Response.CompleteAsync();
+        await context.Response.WriteAsync("OK");
         return;
     }
 
