@@ -110,13 +110,24 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 🔥 1. ABSOLUTE PRIORITY: CORS & PREFLIGHT
-// Placing this at the very top ensures Pre-flight (OPTIONS) requests never fail.
-app.UseCors(policy => policy
-    .SetIsOriginAllowed(origin => true) // Highly robust for Azure SWA / App Service connectivity
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials());
+// 🔥 1. THE NUCLEAR CORS BRIDGE (Manual Header Injection)
+// This bypasses Azure internal conflicts by force-injecting headers into every response.
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("Access-Control-Allow-Origin", "https://lemon-wave-05930bd00.7.azurestaticapps.net");
+    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Correlation-Id");
+    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.StatusCode = 200;
+        await context.Response.CompleteAsync();
+        return;
+    }
+
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
