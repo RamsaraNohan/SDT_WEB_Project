@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://localhost:5001/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/api',
   headers: {
     'Content-Type': 'application/json',
   },
