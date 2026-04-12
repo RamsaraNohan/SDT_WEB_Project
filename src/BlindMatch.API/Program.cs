@@ -108,6 +108,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 🔥 3. PRODUCTION CORS POLICY (Trusting NSBM Portal)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowNSBMPortal", policy =>
+    {
+        policy.WithOrigins("https://lemon-wave-05930bd00.7.azurestaticapps.net")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -119,13 +131,25 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 🔥 3. OBSERVABILITY MIDDLEWARE
+// 🔥 4. ENABLE CORS
+app.UseCors("AllowNSBMPortal");
+
+// 🔥 5. OBSERVABILITY MIDDLEWARE
 app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 🚀 4. HEALTH CHECK ENDPOINT (For Docker)
+// 🚀 6. ROOT ROUTE (Fixes 403 Forbidden)
+app.MapGet("/", () => Results.Ok(new 
+{ 
+    Status = "Healthy", 
+    System = "NSBM Project Tracker API", 
+    Environment = "Production",
+    Version = "1.0.0" 
+}));
+
+// 🚀 7. HEALTH CHECK ENDPOINT (For Docker)
 app.MapHealthChecks("/health");
 
 app.UseHangfireDashboard();
