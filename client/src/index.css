@@ -33,7 +33,7 @@
   @apply transition-all duration-300 hover:translate-x-1;
 }
 
-.bg-dashboard-gradient {
+@utility bg-dashboard-gradient {
   background: radial-gradient(circle at top left, #0054a6 0%, #020617 40%, #39b54a20 100%);
 }
 
