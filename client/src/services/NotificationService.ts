@@ -8,7 +8,20 @@ class NotificationService {
         if (this.connection) return;
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl('https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/hubs/reveal')
+            .withUrl('https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/hubs/reveal', {
+                accessTokenFactory: () => {
+                    const authData = localStorage.getItem('blindmatch-auth');
+                    if (authData) {
+                        try {
+                            const parsed = JSON.parse(authData);
+                            return parsed.state?.token || "";
+                        } catch (e) {
+                            console.error("Error parsing auth token for SignalR:", e);
+                        }
+                    }
+                    return "";
+                }
+            })
             .withAutomaticReconnect()
             .build();
 
