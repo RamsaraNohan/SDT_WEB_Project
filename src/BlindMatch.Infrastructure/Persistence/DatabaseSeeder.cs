@@ -76,7 +76,7 @@ public static class DatabaseSeeder
                 supervisors.Add(user);
 
                 // Add Expertise for each supervisor
-                await context.SupervisorExpertise.AddAsync(new SupervisorExpertise 
+                await context.SupervisorExpertises.AddAsync(new SupervisorExpertise 
                 { 
                     SupervisorId = user.Id, 
                     ResearchAreaId = allAreas[i % allAreas.Count].Id 

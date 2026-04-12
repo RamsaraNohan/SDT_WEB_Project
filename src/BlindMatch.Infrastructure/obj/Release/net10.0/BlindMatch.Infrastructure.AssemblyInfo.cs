@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BlindMatch.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d49f62d09e76eaf98c136458cc1145438feeecbf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ac8cdce26cbc07218be2eaf0008842d51c07907")]
 [assembly: System.Reflection.AssemblyProductAttribute("BlindMatch.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BlindMatch.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
