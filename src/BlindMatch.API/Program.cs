@@ -35,6 +35,12 @@ var jwtSettings = new JwtSettings();
 builder.Configuration.Bind(JwtSettings.SectionName, jwtSettings);
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 
+// 🔥 1. PRE-FLIGHT CONFIGURATION GUARD
+if (string.IsNullOrEmpty(jwtSettings.Secret) || jwtSettings.Secret.Length < 32)
+{
+    Log.Error("❌ CRITICAL: JWT Secret is MISSING or too short (Min 32 chars). Check your Azure App Service Settings.");
+}
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
