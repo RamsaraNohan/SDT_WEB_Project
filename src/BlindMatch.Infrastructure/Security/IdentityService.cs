@@ -15,12 +15,12 @@ namespace BlindMatch.Infrastructure.Security;
 
 public class IdentityService : IIdentityService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IApplicationDbContext _context;
     private readonly JwtSettings _jwtSettings;
 
     public IdentityService(
-        UserManager<ApplicationUser> userManager,
+        UserManager<User> userManager,
         IApplicationDbContext context,
         IOptions<JwtSettings> jwtSettings)
     {
@@ -75,7 +75,7 @@ public class IdentityService : IIdentityService
         return (true, newToken, newRefreshToken);
     }
 
-    private string GenerateJwtToken(ApplicationUser user, IEnumerable<string> roles)
+    private string GenerateJwtToken(User user, IEnumerable<string> roles)
     {
         var claims = new List<Claim>
         {

@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace BlindMatch.Infrastructure.Persistence;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -35,31 +35,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         
         // 🔥 1. ABSOLUTE SCHEMA ANCHOR
         builder.HasDefaultSchema("dbo");
-
-        // 🔥 2. THE UNIFIED BRIDGE: Table Splitting for User & ApplicationUser
-        // This maps the Domain entity and the Security entity to the SAME physical row.
-        builder.Entity<ApplicationUser>(b =>
-        {
-            b.ToTable("AspNetUsers"); // Explicit name for Azure
-            
-            // Map the relationship to the domain entity
-            // Since they share the same ID, they share the same row.
-        });
-
-        builder.Entity<User>(b =>
-        {
-            b.ToTable("AspNetUsers"); // Shared table!
-            b.HasKey(u => u.Id);
-            
-            // 🔥 THE MISSING LINK: Define 1-to-1 Relationship
-            b.HasOne<ApplicationUser>()
-             .WithOne()
-             .HasForeignKey<User>(u => u.Id);
-            
-            // Ensure Entity Framework understands this is the same row as ApplicationUser
-            b.Property(u => u.FullName).HasMaxLength(200).IsRequired();
-            b.Property(u => u.Email).HasMaxLength(256).IsRequired();
-        });
 
         // 🔥 3. EXPLICIT IDENTITY MAPPINGS (Prevents Azure SQL naming conflicts)
         builder.Entity<IdentityRole<Guid>>(b => b.ToTable("AspNetRoles"));
@@ -92,8 +67,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             }
         }
 
-        // Special handling for ApplicationUser entity since it doesn't inherit from BaseEntity
-        foreach (var entry in ChangeTracker.Entries<ApplicationUser>())
+        // Audit for Unified User
+        foreach (var entry in ChangeTracker.Entries<User>())
         {
             switch (entry.State)
             {

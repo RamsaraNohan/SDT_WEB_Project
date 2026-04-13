@@ -7,7 +7,7 @@ namespace BlindMatch.Infrastructure.Persistence;
 
 public static class DatabaseSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+    public static async Task SeedAsync(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
         // 1. Seed Roles
         var roles = new[] { "Student", "Supervisor", "ModuleLeader", "Admin" };
@@ -23,7 +23,7 @@ public static class DatabaseSeeder
         var adminEmail = "admin@blindmatch.edu";
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            var adminUser = new ApplicationUser
+            var adminUser = new User
             {
                 UserName = adminEmail,
                 Email = adminEmail,
@@ -56,7 +56,7 @@ public static class DatabaseSeeder
         var password = "NSBM_Secure_2026!";
 
         // 4. Seed 5 Supervisors
-        var supervisors = new List<ApplicationUser>();
+        var supervisors = new List<User>();
         if (allAreas.Count == 0)
         {
             // 🔥 SAFETY FALLBACK: If areas failed to seed, add one live so we don't crash the % operator
@@ -71,7 +71,7 @@ public static class DatabaseSeeder
             var email = $"supervisor-{i}@nsbm.ac.lk";
             if (await userManager.FindByEmailAsync(email) == null)
             {
-                var user = new ApplicationUser
+                var user = new User
                 {
                     UserName = email,
                     Email = email,
@@ -98,13 +98,13 @@ public static class DatabaseSeeder
         }
 
         // 5. Seed 15 Students
-        var students = new List<ApplicationUser>();
+        var students = new List<User>();
         for (int i = 1; i <= 15; i++)
         {
             var email = $"student-{i}@nsbm.ac.lk";
             if (await userManager.FindByEmailAsync(email) == null)
             {
-                var user = new ApplicationUser
+                var user = new User
                 {
                     UserName = email,
                     Email = email,

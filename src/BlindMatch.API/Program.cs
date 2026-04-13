@@ -3,6 +3,7 @@ using System.Text;
 using BlindMatch.Application.Common.Security;
 using BlindMatch.Application;
 using BlindMatch.Application.Interfaces;
+using BlindMatch.Domain.Entities;
 using BlindMatch.Infrastructure.Persistence;
 using BlindMatch.Infrastructure.Services;
 using BlindMatch.Infrastructure.Security;
@@ -65,7 +66,7 @@ try
     builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
     // 🔥 2. IDENTITY ENGINE
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+    builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
@@ -215,9 +216,6 @@ try
 
     app.UseHangfireDashboard();
 
-    app.MapControllers();
-    app.MapHub<BlindMatch.API.Hubs.RevealHub>("/hubs/reveal");
-
     // 🔥 2. ZERO-DOWNTIME MIGRATION BRIDGE
     // We run migrations in the background to prevent Azure 500.37 Startup timeouts
     _ = Task.Run(async () => {
@@ -226,10 +224,8 @@ try
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationDbContext>();
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-                Log.Information("🚀 BACKGROUND STAGE 1: Starting Database Migrations...");
                 await context.Database.MigrateAsync();
 
                 Log.Information("🚀 BACKGROUND STAGE 2: Starting Database Seeding...");

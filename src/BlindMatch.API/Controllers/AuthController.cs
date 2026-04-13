@@ -1,5 +1,6 @@
 using BlindMatch.API.Models.Auth;
 using BlindMatch.Application.Interfaces;
+using BlindMatch.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -47,7 +48,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("bootstrap")]
-    public async Task<IActionResult> Bootstrap([FromServices] IApplicationDbContext context, [FromServices] UserManager<ApplicationUser> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
+    public async Task<IActionResult> Bootstrap([FromServices] IApplicationDbContext context, [FromServices] UserManager<User> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
     {
         try
         {
