@@ -45,6 +45,38 @@ public class AuthController : ControllerBase
 
     [HttpGet("diagnostic")]
     public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config, [FromServices] IApplicationDbContext context)
+    {
+        try 
+        {
+            var connection = context.Database.GetDbConnection();
+            if (connection.State != System.Data.ConnectionState.Open)
+                await connection.OpenAsync();
+
+            using var command = connection.CreateCommand();
+            
+            // Get DB Name
+            command.CommandText = "SELECT DB_NAME()";
+            var dbName = await command.ExecuteScalarAsync();
+
+            // List ALL tables for schema debugging
+            command.CommandText = "SELECT TABLE_SCHEMA + '.' + TABLE_NAME FROM INFORMATION_SCHEMA.TABLES ORDER BY TABLE_NAME";
+            var allTables = new List<string>();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync()) allTables.Add(reader.GetString(0));
+            }
+
+            return Ok(new
+            {
+                Status = "Deep Scan Active",
+                DatabaseName = dbName,
+                KnownTables = allTables,
+                TablesCreatedCount = allTables.Count
+            });
+        }
+        catch (Exception ex)
+        {
+            return Ok(new {
                 Status = "Critical Crash in Diagnostic",
                 Error = ex.Message,
                 Details = "Is your database password missing from the Azure Portal?",
