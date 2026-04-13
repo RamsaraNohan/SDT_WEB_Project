@@ -51,6 +51,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             b.ToTable("AspNetUsers"); // Shared table!
             b.HasKey(u => u.Id);
             
+            // 🔥 THE MISSING LINK: Define 1-to-1 Relationship
+            b.HasOne<ApplicationUser>()
+             .WithOne()
+             .HasForeignKey<User>(u => u.Id);
+            
             // Ensure Entity Framework understands this is the same row as ApplicationUser
             b.Property(u => u.FullName).HasMaxLength(200).IsRequired();
             b.Property(u => u.Email).HasMaxLength(256).IsRequired();
