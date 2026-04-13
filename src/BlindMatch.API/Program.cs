@@ -216,6 +216,9 @@ try
 
     app.UseHangfireDashboard();
 
+    app.MapControllers();
+    app.MapHub<BlindMatch.API.Hubs.RevealHub>("/hubs/reveal");
+
     // 🔥 2. ZERO-DOWNTIME MIGRATION BRIDGE
     // We run migrations in the background to prevent Azure 500.37 Startup timeouts
     _ = Task.Run(async () => {
