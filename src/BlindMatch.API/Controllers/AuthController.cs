@@ -51,18 +51,20 @@ public class AuthController : ControllerBase
             var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
                           || !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
 
-            // 🔥 REAL WORLD CHECK: Attempt to count students to verify tables exist
+            // 🔥 REAL WORLD CHECK: Attempt to query the Identity tables using raw SQL 
+            // This bypasses the need for the ApplicationUser class in the interface
             var studentCount = -1;
             var tablesExist = false;
             try { 
-                studentCount = context.Users.Count(); 
+                // We use a simple count query string
+                studentCount = context.Database.ExecuteSqlRaw("SELECT COUNT(*) FROM AspNetUsers"); 
                 tablesExist = true;
-            } catch { /* Table likely missing */ }
+            } catch { /* Table likely missing or migrations pending */ }
 
             return Ok(new {
                 DatabaseConfigured = dbPresent,
                 TablesCreated = tablesExist,
-                TotalUsersSeeded = studentCount,
+                TotalUsersSeeded = tablesExist ? studentCount : 0,
                 JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
                 JwtSecretValidLength = jwtValid,
                 SignalRConfigured = signalR,
