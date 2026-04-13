@@ -8,6 +8,7 @@ using BlindMatch.Infrastructure.Persistence;
 using BlindMatch.Infrastructure.Services;
 using BlindMatch.Infrastructure.Security;
 using BlindMatch.API.Middleware;
+using BlindMatch.API.Controllers;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Hangfire.SqlServer;
