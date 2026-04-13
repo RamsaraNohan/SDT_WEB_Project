@@ -32,10 +32,12 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            // 🔥 INTERNAL ERROR SNIFFER: Reveals the real crash reason to DevTools
+            // 🔥 ULTIMATE FORENSIC SNIFFER: No more hidden errors
             return StatusCode(500, new { 
                 error = "Internal Crash Detected",
-                details = ex.Message,
+                message = ex.Message,
+                stackTrace = ex.StackTrace,
+                innerException = ex.InnerException?.Message,
                 source = ex.Source
             });
         }
