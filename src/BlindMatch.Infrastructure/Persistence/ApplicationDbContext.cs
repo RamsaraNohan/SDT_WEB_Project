@@ -32,6 +32,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        // 🔥 SCHEMA ANCHOR: Force production tables into the dbo schema to 
+        // prevent 'Invalid object name' errors when running under restricted Azure users.
+        builder.HasDefaultSchema("dbo");
+        
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 

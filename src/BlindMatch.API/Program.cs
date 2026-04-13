@@ -45,15 +45,18 @@ try
     }
 
     // 🔥 1. DATABASE & DI BRIDGE
-    var connectionStrings = builder.Configuration.GetSection("ConnectionStrings");
-    var connectionString = connectionStrings["DefaultConnection"] 
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                        ?? builder.Configuration["ConnectionStrings__DefaultConnection"] // Prioritize Azure System Name
+                        ?? builder.Configuration["ConnectionStrings:DefaultConnection"]
+                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     // 🔥 PRE-START VALIDATION: Check for credentials to prevent silent timeouts
     bool hasCredentials = connectionString.Contains("User ID") || connectionString.Contains("Password");
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString, b => b.MigrationsAssembly("BlindMatch.Infrastructure")));
+        options.UseSqlServer(connectionString,
+            b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+                  .CommandTimeout(180))); // Increased to 3 mins for Azure Cold Start
 
     // Bridge the Interface to the Class
     builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
