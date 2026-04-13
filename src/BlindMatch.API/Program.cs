@@ -165,7 +165,7 @@ try
         });
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 

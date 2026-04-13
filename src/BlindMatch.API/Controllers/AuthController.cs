@@ -47,6 +47,15 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpGet("bootstrap-ui")]
+    public async Task<IActionResult> BootstrapUI([FromServices] IApplicationDbContext context, [FromServices] UserManager<User> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        return await Bootstrap(context, userManager, roleManager);
+    }
+
+    [HttpGet("ping")]
+    public IActionResult Ping() => Ok(new { status = "Pong", timestamp = DateTime.UtcNow });
+
     [HttpPost("bootstrap")]
     public async Task<IActionResult> Bootstrap([FromServices] IApplicationDbContext context, [FromServices] UserManager<User> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
     {
