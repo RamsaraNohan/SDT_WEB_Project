@@ -211,28 +211,30 @@ try
     app.MapControllers();
     app.MapHub<BlindMatch.API.Hubs.RevealHub>("/hubs/reveal");
 
-    // 🔥 8. ACTIVATE PRODUCTION SEEDER (Background Mode to prevent 500.37 timeout)
-    _ = Task.Run(async () =>
+    // 🔥 8. ENFORCE DATABASE SCHEMA (Main Thread Execution)
+    // We do this before app.Run() to ensure the site is READY before it is HEALTHY
+    using (var scope = app.Services.CreateScope())
     {
-        using (var scope = app.Services.CreateScope())
+        var services = scope.ServiceProvider;
+        try
         {
-            var services = scope.ServiceProvider;
-            try
-            {
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                
-                await context.Database.MigrateAsync();
-                await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
-            }
-            catch (Exception ex)
-            {
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred while seeding the database in the background.");
-            }
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            
+            Log.Information("🚀 STAGE 1: Starting Database Migrations...");
+            await context.Database.MigrateAsync();
+            
+            Log.Information("🚀 STAGE 2: Starting Database Seeding...");
+            await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
+            Log.Information("✅ STAGE 3: System Fully Synchronized");
         }
-    });
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "❌ CRITICAL: Database synchronization failed.");
+            // Do not throw; let the app start so the Diagnostic tool can show the error
+        }
+    }
 
     app.Run();
 }

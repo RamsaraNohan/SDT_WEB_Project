@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("diagnostic")]
-    public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config)
+    public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config, [FromServices] IApplicationDbContext context)
     {
         try 
         {
@@ -51,12 +51,22 @@ public class AuthController : ControllerBase
             var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
                           || !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
 
+            // 🔥 REAL WORLD CHECK: Attempt to count students to verify tables exist
+            var studentCount = -1;
+            var tablesExist = false;
+            try { 
+                studentCount = context.Users.Count(); 
+                tablesExist = true;
+            } catch { /* Table likely missing */ }
+
             return Ok(new {
                 DatabaseConfigured = dbPresent,
+                TablesCreated = tablesExist,
+                TotalUsersSeeded = studentCount,
                 JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
                 JwtSecretValidLength = jwtValid,
                 SignalRConfigured = signalR,
-                Status = "Audit Layer Active",
+                Status = tablesExist ? "System Ready" : "Database Tables Missing - Migrating...",
                 Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
             });
         }
