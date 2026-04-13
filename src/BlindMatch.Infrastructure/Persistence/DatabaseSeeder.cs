@@ -57,6 +57,15 @@ public static class DatabaseSeeder
 
         // 4. Seed 5 Supervisors
         var supervisors = new List<ApplicationUser>();
+        if (allAreas.Count == 0)
+        {
+            // 🔥 SAFETY FALLBACK: If areas failed to seed, add one live so we don't crash the % operator
+            var fallback = new ResearchArea { Name = "General Research" };
+            await context.ResearchAreas.AddAsync(fallback);
+            await context.SaveChangesAsync();
+            allAreas.Add(fallback);
+        }
+
         for (int i = 1; i <= 5; i++)
         {
             var email = $"supervisor-{i}@nsbm.ac.lk";
@@ -71,16 +80,20 @@ public static class DatabaseSeeder
                     IsActive = true,
                     EmailConfirmed = true
                 };
-                await userManager.CreateAsync(user, password);
-                await userManager.AddToRoleAsync(user, "Supervisor");
-                supervisors.Add(user);
+                
+                var result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Supervisor");
+                    supervisors.Add(user);
 
-                // Add Expertise for each supervisor
-                await context.SupervisorExpertises.AddAsync(new SupervisorExpertise 
-                { 
-                    SupervisorId = user.Id, 
-                    ResearchAreaId = allAreas[i % allAreas.Count].Id 
-                });
+                    // Add Expertise for each supervisor
+                    await context.SupervisorExpertises.AddAsync(new SupervisorExpertise 
+                    { 
+                        SupervisorId = user.Id, 
+                        ResearchAreaId = allAreas[i % allAreas.Count].Id 
+                    });
+                }
             }
         }
 
@@ -100,14 +113,18 @@ public static class DatabaseSeeder
                     IsActive = true,
                     EmailConfirmed = true
                 };
-                await userManager.CreateAsync(user, password);
-                await userManager.AddToRoleAsync(user, "Student");
-                students.Add(user);
+                
+                var result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Student");
+                    students.Add(user);
+                }
             }
         }
 
         // 6. Seed 7 Proposals (4 Individual, 3 Group)
-        if (!await context.Proposals.AnyAsync())
+        if (!await context.Proposals.AnyAsync() && students.Count >= 7)
         {
             for (int i = 0; i < 7; i++)
             {

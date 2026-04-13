@@ -52,24 +52,29 @@ public class AuthController : ControllerBase
             var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
                           || !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
 
-            // 🔥 REAL WORLD CHECK: Attempt to query the Identity tables using raw SQL 
-            // This bypasses the need for the ApplicationUser class in the interface
-            var studentCount = -1;
+            // 🔥 ABSOLUTE TRUTH CHECK: Specifically search for the test student
             var tablesExist = false;
+            var studentExists = false;
+            var totalUsers = 0;
             try { 
-                // We use a simple count query string
-                studentCount = context.Database.ExecuteSqlRaw("SELECT COUNT(*) FROM AspNetUsers"); 
+                // We use raw SQL to avoid the ApplicationUser interface gap
+                totalUsers = context.Database.SqlQueryRaw<int>("SELECT COUNT(*) as Value FROM AspNetUsers").AsEnumerable().First();
                 tablesExist = true;
+
+                // Check if our target student is actually there
+                var checkStudent = context.Database.SqlQueryRaw<int>("SELECT COUNT(*) as Value FROM AspNetUsers WHERE Email = 'student-1@nsbm.ac.lk'").AsEnumerable().First();
+                studentExists = checkStudent > 0;
             } catch { /* Table likely missing or migrations pending */ }
 
             return Ok(new {
                 DatabaseConfigured = dbPresent,
                 TablesCreated = tablesExist,
-                TotalUsersSeeded = tablesExist ? studentCount : 0,
+                TotalUsersSeeded = totalUsers,
+                TestStudentExists = studentExists,
                 JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
                 JwtSecretValidLength = jwtValid,
                 SignalRConfigured = signalR,
-                Status = tablesExist ? "System Ready" : "Database Tables Missing - Migrating...",
+                Status = studentExists ? "System Fully Ready" : "Seeding Incomplete - Missing Student-1",
                 Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
             });
         }
