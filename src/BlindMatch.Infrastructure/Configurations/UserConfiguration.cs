@@ -8,6 +8,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        // 🔥 SHARED TABLE MAPPING
+        builder.ToTable("AspNetUsers");
+
         builder.HasKey(u => u.Id);
         builder.Property(u => u.FullName).IsRequired().HasMaxLength(200);
         builder.Property(u => u.Email).IsRequired().HasMaxLength(256);

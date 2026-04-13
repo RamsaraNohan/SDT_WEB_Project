@@ -43,22 +43,53 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("bootstrap")]
+    public async Task<IActionResult> Bootstrap([FromServices] IApplicationDbContext context, [FromServices] UserManager<ApplicationUser> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        try
+        {
+            var dbContext = (ApplicationDbContext)context;
+            
+            // 🔥 NUCLEAR OPTION: Clean Slate
+            // We use this to resolve fragmented production schemas.
+            // WARNING: This will drop tables and recreate them.
+            // await dbContext.Database.EnsureDeletedAsync(); // Uncomment ONLY if massive schema corruption persists
+            
+            Log.Information("🚀 BOOTSTRAP: Starting Migration...");
+            await dbContext.Database.MigrateAsync();
+
+            Log.Information("🚀 BOOTSTRAP: Starting Seeding...");
+            await DatabaseSeeder.SeedAsync(dbContext, userManager, roleManager);
+
+            return Ok(new { 
+                Status = "Bootstrap Successful", 
+                Timestamp = DateTime.UtcNow,
+                Message = "Database schema has been synchronized and data has been seeded."
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Bootstrap Failed", details = ex.Message, stack = ex.StackTrace });
+        }
+    }
+
     [HttpGet("diagnostic")]
     public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config, [FromServices] IApplicationDbContext context)
     {
         try 
         {
-            var connection = context.Database.GetDbConnection();
+            var dbContext = (ApplicationDbContext)context;
+            var connection = dbContext.Database.GetDbConnection();
             if (connection.State != System.Data.ConnectionState.Open)
                 await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
             
-            // Get DB Name
-            command.CommandText = "SELECT DB_NAME()";
-            var dbName = await command.ExecuteScalarAsync();
+            // Get DB Name & Current User Schema
+            command.CommandText = "SELECT DB_NAME() + ' | ' + SCHEMA_NAME()";
+            var dbInfo = await command.ExecuteScalarAsync();
 
-            // List ALL tables for schema debugging
+            // List ALL tables for forensic audit
             command.CommandText = "SELECT TABLE_SCHEMA + '.' + TABLE_NAME FROM INFORMATION_SCHEMA.TABLES ORDER BY TABLE_NAME";
             var allTables = new List<string>();
             using (var reader = await command.ExecuteReaderAsync())
@@ -68,18 +99,18 @@ public class AuthController : ControllerBase
 
             return Ok(new
             {
-                Status = "Deep Scan Active",
-                DatabaseName = dbName,
+                Status = "Forensic Probe Active",
+                DatabaseContext = dbInfo,
                 KnownTables = allTables,
-                TablesCreatedCount = allTables.Count
+                UnifiedBridgeEnabled = true,
+                Timestamp = DateTime.UtcNow
             });
         }
         catch (Exception ex)
         {
             return Ok(new {
-                Status = "Critical Crash in Diagnostic",
+                Status = "Critical Diagnostic Failure",
                 Error = ex.Message,
-                Details = "Is your database password missing from the Azure Portal?",
                 Inner = ex.InnerException?.Message
             });
         }

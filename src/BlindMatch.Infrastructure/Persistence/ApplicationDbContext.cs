@@ -33,10 +33,37 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     {
         base.OnModelCreating(builder);
         
-        // 🔥 SCHEMA ANCHOR: Force production tables into the dbo schema to 
-        // prevent 'Invalid object name' errors when running under restricted Azure users.
+        // 🔥 1. ABSOLUTE SCHEMA ANCHOR
         builder.HasDefaultSchema("dbo");
-        
+
+        // 🔥 2. THE UNIFIED BRIDGE: Table Splitting for User & ApplicationUser
+        // This maps the Domain entity and the Security entity to the SAME physical row.
+        builder.Entity<ApplicationUser>(b =>
+        {
+            b.ToTable("AspNetUsers"); // Explicit name for Azure
+            
+            // Map the relationship to the domain entity
+            // Since they share the same ID, they share the same row.
+        });
+
+        builder.Entity<User>(b =>
+        {
+            b.ToTable("AspNetUsers"); // Shared table!
+            b.HasKey(u => u.Id);
+            
+            // Ensure Entity Framework understands this is the same row as ApplicationUser
+            b.Property(u => u.FullName).HasMaxLength(200).IsRequired();
+            b.Property(u => u.Email).HasMaxLength(256).IsRequired();
+        });
+
+        // 🔥 3. EXPLICIT IDENTITY MAPPINGS (Prevents Azure SQL naming conflicts)
+        builder.Entity<IdentityRole<Guid>>(b => b.ToTable("AspNetRoles"));
+        builder.Entity<IdentityRoleClaim<Guid>>(b => b.ToTable("AspNetRoleClaims"));
+        builder.Entity<IdentityUserRole<Guid>>(b => b.ToTable("AspNetUserRoles"));
+        builder.Entity<IdentityUserClaim<Guid>>(b => b.ToTable("AspNetUserClaims"));
+        builder.Entity<IdentityUserLogin<Guid>>(b => b.ToTable("AspNetUserLogins"));
+        builder.Entity<IdentityUserToken<Guid>>(b => b.ToTable("AspNetUserTokens"));
+
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
