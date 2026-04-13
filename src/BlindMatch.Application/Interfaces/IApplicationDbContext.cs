@@ -6,6 +6,7 @@ namespace BlindMatch.Application.Interfaces;
 
 public interface IApplicationDbContext
 {
+    DbSet<ApplicationUser> Users { get; }
     DbSet<User> DomainUsers { get; }
     DbSet<ResearchArea> ResearchAreas { get; }
     DbSet<Proposal> Proposals { get; }
