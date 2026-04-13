@@ -204,13 +204,19 @@ try
     app.UseAuthorization();
 
     // 🚀 6. ROOT ROUTE (Fixes 403 Forbidden)
-    app.MapGet("/", () => Results.Ok(new 
-    { 
-        Status = "Healthy", 
-        System = "NSBM Project Tracker API", 
-        Environment = "Production",
-        Version = "1.0.0" 
-    }));
+    app.MapGet("/", ([FromServices] IEnumerable<Microsoft.AspNetCore.Mvc.Infrastructure.ActionDescriptorCollectionProvider> providers) => 
+    {
+        var totalRoutes = providers.SelectMany(x => x.ActionDescriptors.Items).Count();
+        return Results.Ok(new 
+        { 
+            Status = "Healthy", 
+            System = "NSBM Project Tracker API", 
+            Environment = "Production",
+            Version = "1.0.1",
+            DiscoveredRoutes = totalRoutes,
+            Timestamp = DateTime.UtcNow
+        });
+    });
 
     // 🚀 7. HEALTH CHECK ENDPOINT (For Docker)
     app.MapHealthChecks("/health");
