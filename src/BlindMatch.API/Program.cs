@@ -47,11 +47,14 @@ try
     // 🔥 1. DATABASE & DI BRIDGE
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                         ?? builder.Configuration["ConnectionStrings__DefaultConnection"] // Prioritize Azure System Name
-                        ?? builder.Configuration["ConnectionStrings:DefaultConnection"]
-                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+                        ?? builder.Configuration["ConnectionStrings:DefaultConnection"];
 
-    // 🔥 PRE-START VALIDATION: Check for credentials to prevent silent timeouts
-    bool hasCredentials = connectionString.Contains("User ID") || connectionString.Contains("Password");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        Log.Error("🚨 CRITICAL: No connection string found in Azure environment!");
+        // We set a dummy string to prevent DI crashes, so diagnostic tools can run
+        connectionString = "Server=NO_AZURE_CONNECTION_STRING_FOUND;Database=None;";
+    }
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString,
@@ -168,14 +171,15 @@ try
     var app = builder.Build();
 
     // 🚀 THE INSTANT TRUTH-REPORTER (Prevents 500.37 Timeout)
-    if (!hasCredentials)
+    bool hasCredentials = connectionString.Contains("User ID") || connectionString.Contains("Password");
+    if (!hasCredentials || connectionString.Contains("NO_AZURE_CONNECTION_STRING_FOUND"))
     {
         app.MapGet("/", () => Results.Problem(
-            detail: "Your connection string in the Azure Portal is missing 'User ID' or 'Password'. Please visit the Configuration tab and update ConnectionStrings:DefaultConnection.",
-            title: "Azure Configuration Error",
+            detail: "Your connection string in the Azure Portal is missing or invalid. Please check the Configuration/Connection Strings section for 'DefaultConnection'.",
+            title: "Azure Configuration Warning",
             statusCode: 500));
-        app.Run();
-        return;
+        
+        // We still allow the app to run so /api/auth/diagnostic can be hit
     }
 
     // Configure the HTTP request pipeline.
