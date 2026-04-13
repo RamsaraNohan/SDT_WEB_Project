@@ -1,6 +1,7 @@
 using BlindMatch.API.Models.Auth;
 using BlindMatch.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlindMatch.API.Controllers;
 
