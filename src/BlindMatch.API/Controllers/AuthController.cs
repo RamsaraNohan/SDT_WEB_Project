@@ -2,6 +2,9 @@ using BlindMatch.API.Models.Auth;
 using BlindMatch.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using BlindMatch.Infrastructure.Persistence;
+using Serilog;
 
 namespace BlindMatch.API.Controllers;
 
