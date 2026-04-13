@@ -45,44 +45,6 @@ public class AuthController : ControllerBase
 
     [HttpGet("diagnostic")]
     public async Task<IActionResult> Diagnostic([FromServices] IConfiguration config, [FromServices] IApplicationDbContext context)
-    {
-        try 
-        {
-            var dbPresent = !string.IsNullOrEmpty(config.GetConnectionString("DefaultConnection"));
-            var jwtSecret = config["JwtSettings:Secret"];
-            var jwtValid = !string.IsNullOrEmpty(jwtSecret) && jwtSecret.Length >= 32;
-            var signalR = !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionString"]) 
-                          || !string.IsNullOrEmpty(config["Azure:SignalR:ConnectionStrng"]);
-
-            // 🔥 ABSOLUTE TRUTH CHECK: Specifically search for the test student
-            var tablesExist = false;
-            var studentExists = false;
-            var totalUsers = 0;
-            try { 
-                // We use raw SQL to avoid the ApplicationUser interface gap
-                totalUsers = context.Database.SqlQueryRaw<int>("SELECT COUNT(*) as Value FROM AspNetUsers").AsEnumerable().First();
-                tablesExist = true;
-
-                // Check if our target student is actually there
-                var checkStudent = context.Database.SqlQueryRaw<int>("SELECT COUNT(*) as Value FROM AspNetUsers WHERE Email = 'student-1@nsbm.ac.lk'").AsEnumerable().First();
-                studentExists = checkStudent > 0;
-            } catch { /* Table likely missing or migrations pending */ }
-
-            return Ok(new {
-                DatabaseConfigured = dbPresent,
-                TablesCreated = tablesExist,
-                TotalUsersSeeded = totalUsers,
-                TestStudentExists = studentExists,
-                JwtSecretConfigured = !string.IsNullOrEmpty(jwtSecret),
-                JwtSecretValidLength = jwtValid,
-                SignalRConfigured = signalR,
-                Status = studentExists ? "System Fully Ready" : "Seeding Incomplete - Missing Student-1",
-                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-            });
-        }
-        catch (Exception ex)
-        {
-            return Ok(new {
                 Status = "Critical Crash in Diagnostic",
                 Error = ex.Message,
                 Details = "Is your database password missing from the Azure Portal?",
