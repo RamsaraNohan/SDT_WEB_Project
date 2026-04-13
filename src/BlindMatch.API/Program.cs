@@ -204,15 +204,15 @@ try
     app.UseAuthorization();
 
     // 🚀 6. ROOT ROUTE (Fixes 403 Forbidden)
-    app.MapGet("/", ([FromServices] IEnumerable<Microsoft.AspNetCore.Mvc.Infrastructure.ActionDescriptorCollectionProvider> providers) => 
+    app.MapGet("/", ([FromServices] Microsoft.AspNetCore.Mvc.Infrastructure.IActionDescriptorCollectionProvider provider) => 
     {
-        var totalRoutes = providers.SelectMany(x => x.ActionDescriptors.Items).Count();
+        var totalRoutes = provider.ActionDescriptors.Items.Count;
         return Results.Ok(new 
         { 
             Status = "Healthy", 
             System = "NSBM Project Tracker API", 
             Environment = "Production",
-            Version = "1.0.1",
+            Version = "1.0.2",
             DiscoveredRoutes = totalRoutes,
             Timestamp = DateTime.UtcNow
         });
