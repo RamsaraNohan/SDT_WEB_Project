@@ -8,15 +8,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        // 🔥 SHARED TABLE MAPPING
-        builder.ToTable("AspNetUsers");
-
-        builder.HasKey(u => u.Id);
+        // User inherits from IdentityUser<Guid> so it maps to AspNetUsers automatically.
+        // We only configure our custom extra columns here.
         builder.Property(u => u.FullName).IsRequired().HasMaxLength(200);
-        builder.Property(u => u.Email).IsRequired().HasMaxLength(256);
         builder.Property(u => u.Department).HasMaxLength(100);
         builder.Property(u => u.OfficeLocation).HasMaxLength(100);
-        
+
+        // Soft-delete filter - only show non-deleted users by default
         builder.HasQueryFilter(u => !u.IsDeleted);
     }
 }

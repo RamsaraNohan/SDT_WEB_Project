@@ -17,6 +17,7 @@ namespace BlindMatch.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -58,7 +59,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.DeadlineSettings", b =>
@@ -80,7 +81,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeadlineSettings");
+                    b.ToTable("DeadlineSettings", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.FinalSubmission", b =>
@@ -122,7 +123,7 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("ProposalId")
                         .IsUnique();
 
-                    b.ToTable("FinalSubmissions");
+                    b.ToTable("FinalSubmissions", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.Match", b =>
@@ -165,7 +166,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Matches");
+                    b.ToTable("Matches", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.ProjectScore", b =>
@@ -212,7 +213,7 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("MatchId")
                         .IsUnique();
 
-                    b.ToTable("ProjectScores");
+                    b.ToTable("ProjectScores", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.Proposal", b =>
@@ -276,7 +277,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Proposals");
+                    b.ToTable("Proposals", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.ProposalPublicView", b =>
@@ -330,7 +331,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("ResearchAreaId");
 
-                    b.ToTable("ProposalPublicViews");
+                    b.ToTable("ProposalPublicViews", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.RefreshToken", b =>
@@ -365,7 +366,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.ResearchArea", b =>
@@ -399,7 +400,7 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ResearchAreas");
+                    b.ToTable("ResearchAreas", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.StudentReveal", b =>
@@ -444,7 +445,7 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("MatchId")
                         .IsUnique();
 
-                    b.ToTable("StudentReveals");
+                    b.ToTable("StudentReveals", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.SupervisionMeeting", b =>
@@ -484,7 +485,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("SupervisionMeetings");
+                    b.ToTable("SupervisionMeetings", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.SupervisorExpertise", b =>
@@ -499,7 +500,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("ResearchAreaId");
 
-                    b.ToTable("SupervisorExpertises");
+                    b.ToTable("SupervisorExpertises", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.SupervisorReveal", b =>
@@ -541,7 +542,7 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("MatchId")
                         .IsUnique();
 
-                    b.ToTable("SupervisorReveals");
+                    b.ToTable("SupervisorReveals", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.SupervisorSettings", b =>
@@ -570,60 +571,10 @@ namespace BlindMatch.Infrastructure.Migrations
                     b.HasIndex("SupervisorId")
                         .IsUnique();
 
-                    b.ToTable("SupervisorSettings");
+                    b.ToTable("SupervisorSettings", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Department")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("FacultyPageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsGroupLead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OfficeLocation")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("BlindMatch.Infrastructure.Persistence.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -640,7 +591,8 @@ namespace BlindMatch.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -654,7 +606,8 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -680,7 +633,8 @@ namespace BlindMatch.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("OfficeLocation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -714,7 +668,7 @@ namespace BlindMatch.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -742,7 +696,7 @@ namespace BlindMatch.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -766,7 +720,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -790,7 +744,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -811,7 +765,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -826,7 +780,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -845,7 +799,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "dbo");
                 });
 
             modelBuilder.Entity("BlindMatch.Domain.Entities.FinalSubmission", b =>
@@ -1012,7 +966,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("BlindMatch.Infrastructure.Persistence.ApplicationUser", null)
+                    b.HasOne("BlindMatch.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1021,7 +975,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("BlindMatch.Infrastructure.Persistence.ApplicationUser", null)
+                    b.HasOne("BlindMatch.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1036,7 +990,7 @@ namespace BlindMatch.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlindMatch.Infrastructure.Persistence.ApplicationUser", null)
+                    b.HasOne("BlindMatch.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1045,7 +999,7 @@ namespace BlindMatch.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("BlindMatch.Infrastructure.Persistence.ApplicationUser", null)
+                    b.HasOne("BlindMatch.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

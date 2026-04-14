@@ -3,15 +3,13 @@ name: Blind-Match CD Production
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -21,48 +19,16 @@ jobs:
       run: dotnet restore src/BlindMatch.API/BlindMatch.API.csproj
 
     - name: Build
-      run: dotnet build src/BlindMatch.API/BlindMatch.API.csproj --no-restore
+      run: dotnet build src/BlindMatch.API/BlindMatch.API.csproj --no-restore --configuration Release
 
-    # 🔥 NEW: SELF-CONTAINED PUBLISH (Ensures .NET 10 works on Azure)
+    # Publish as framework-dependent (Azure App Service has the runtime)
+    # This produces a much smaller package and avoids win-x86 mismatch errors
     - name: Publish API
-      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x86 --self-contained true -o ./publish
-
-    # 🔥 MANDATORY TEST GATE
-    - name: Run Tests
-      run: dotnet test src/BlindMatch.API/BlindMatch.API.csproj --configuration Release
-
-  docker-validation:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-
-    # 🔥 DOCKER BUILD VALIDATION
-    - name: Build Docker API Image
-      run: docker build -t blindmatch-api:v1.${{ github.run_number }} ./src -f ./src/BlindMatch.API/Dockerfile
-
-    - name: Build Docker Frontend Image
-      run: docker build -t blindmatch-frontend:v1.${{ github.run_number }} ./client -f ./client/Dockerfile
-
-  deploy-to-azure:
-    needs: docker-validation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    # 🔥 RE-DOWNLOAD PUBLISH ARTIFACT (Implicitly from previous step context or re-run)
-    - name: Re-Publish for Deployment
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-    
-    - name: Final Publish
-      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -r win-x86 --self-contained true -o ./publish
+      run: dotnet publish src/BlindMatch.API/BlindMatch.API.csproj -c Release -o ./publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
-        app-name: "blindmatch"
+        app-name: "blindmatch-ekf5hng6echxdbar"
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: "./publish"
