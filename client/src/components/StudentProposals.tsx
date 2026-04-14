@@ -93,7 +93,11 @@ const StudentProposals: React.FC = () => {
                   <Clock size={18} /> Pending Reveal
                 </button>
               )}
-              <button className="p-3 bg-white/5 text-slate-400 rounded-xl hover:text-white transition-all">
+              <button 
+                onClick={() => alert('Full Document Viewer Coming Soon')}
+                className="p-3 bg-white/5 text-slate-400 rounded-xl hover:text-white transition-all"
+                title="View Full Document"
+              >
                 <ExternalLink size={20} />
               </button>
             </div>

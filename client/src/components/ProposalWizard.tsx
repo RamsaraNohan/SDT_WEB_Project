@@ -117,6 +117,7 @@ const ProposalWizard: React.FC = () => {
             </div>
           </div>
 
+          <div className="flex flex-col h-full space-y-2">
             <div className="flex justify-between items-center pr-1">
               <label className="text-sm font-medium text-slate-300">Project Abstract</label>
               <span className={`text-xs font-bold ${isWordCountValid ? 'text-[#39b54a]' : 'text-amber-400'}`}>
@@ -126,7 +127,7 @@ const ProposalWizard: React.FC = () => {
             <textarea
               required
               rows={10}
-              className={`w-full px-4 py-3 bg-slate-900/50 border rounded-xl focus:ring-2 outline-none transition-all ${isWordCountValid ? 'border-white/10 focus:ring-primary' : 'border-amber-400/50 focus:ring-amber-400'}`}
+              className={`w-full flex-1 px-4 py-3 bg-slate-900/50 border rounded-xl focus:ring-2 outline-none transition-all ${isWordCountValid ? 'border-white/10 focus:ring-primary' : 'border-amber-400/50 focus:ring-amber-400'}`}
               placeholder="Detail the problem statement, proposed methodology, and expected outcomes..."
               value={formData.abstract}
               onChange={e => setFormData({...formData, abstract: e.target.value})}
@@ -134,6 +135,7 @@ const ProposalWizard: React.FC = () => {
             {!isWordCountValid && wordCount > 0 && (
               <p className="text-[10px] text-amber-400 font-medium">Abstract must be between 100 and 200 words for anonymous matching.</p>
             )}
+          </div>
         </div>
 
         {error && (

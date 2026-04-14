@@ -122,8 +122,8 @@ const Dashboard: React.FC = () => {
                         </>
                     )}
 
-                    <NavItem icon={<Activity size={20} />} label="Analytics" />
-                    <NavItem icon={<Settings size={20} />} label="Settings" />
+                    <NavItem icon={<Activity size={20} />} label="Analytics" active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} />
+                    <NavItem icon={<Settings size={20} />} label="Settings" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
                 </nav>
 
                 <div className="p-4 border-t border-white/5">
@@ -156,11 +156,13 @@ const Dashboard: React.FC = () => {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-reveal-fade">
-                    <StatCard label="Matched Projects" value="0/1" sub="Required: 1" />
-                    <StatCard label="Active Interests" value={isStudent ? "0" : "5"} sub={isStudent ? "From supervisors" : "Your expressions"} />
-                    <StatCard label="Days Remaining" value="14" sub="Submission deadline" />
-                </div>
+                {activeTab === 'overview' && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-reveal-fade">
+                        <StatCard label="Matched Projects" value="0/1" sub="Required: 1" />
+                        <StatCard label="Active Interests" value={isStudent ? "0" : "5"} sub={isStudent ? "From supervisors" : "Your expressions"} />
+                        <StatCard label="Days Remaining" value="14" sub="Submission deadline" />
+                    </div>
+                )}
 
                 <div className="mt-8 glass-card rounded-3xl p-8 border border-white/5 min-h-[500px]">
                     {activeTab === 'overview' && (
@@ -190,6 +192,22 @@ const Dashboard: React.FC = () => {
                     )}
                     
                     {activeTab === 'matches' && isSupervisor && <SupervisorMatches />}
+
+                    {activeTab === 'analytics' && (
+                        <div className="flex flex-col items-center justify-center h-64 text-center animate-reveal-fade">
+                            <Activity size={48} className="text-slate-700 mb-4" />
+                            <h3 className="text-xl font-bold text-slate-300">Analytics Insights</h3>
+                            <p className="text-slate-500 mt-2">Comprehensive data visualization and reporting interface is coming soon.</p>
+                        </div>
+                    )}
+
+                    {activeTab === 'settings' && (
+                        <div className="flex flex-col items-center justify-center h-64 text-center animate-reveal-fade">
+                            <Settings size={48} className="text-slate-700 mb-4" />
+                            <h3 className="text-xl font-bold text-slate-300">System Settings</h3>
+                            <p className="text-slate-500 mt-2">User preferences and system configuration options will be available shortly.</p>
+                        </div>
+                    )}
                 </div>
             </main>
         </div>
