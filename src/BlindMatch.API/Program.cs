@@ -57,6 +57,11 @@ try
         // We set a dummy string to prevent DI crashes, so diagnostic tools can run
         connectionString = "Server=NO_AZURE_CONNECTION_STRING_FOUND;Database=None;";
     }
+    else
+    {
+        // 🔥 FIX FOR AZURE PUBLISH PROFILE TYPO ("Connection Timeout" -> "Connect Timeout")
+        connectionString = connectionString.Replace("Connection Timeout", "Connect Timeout", StringComparison.OrdinalIgnoreCase);
+    }
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString,
