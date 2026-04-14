@@ -47,10 +47,29 @@ public class AuthController : ControllerBase
         }
     }
 
+    // GET /api/auth/bootstrap-ui → NUCLEAR RESET: drops all tables, re-runs migrations, seeds data
     [HttpGet("bootstrap-ui")]
     public async Task<IActionResult> BootstrapUI([FromServices] IApplicationDbContext context, [FromServices] UserManager<User> userManager, [FromServices] RoleManager<IdentityRole<Guid>> roleManager)
     {
-        return await Bootstrap(context, userManager, roleManager);
+        try
+        {
+            var dbContext = (ApplicationDbContext)context;
+            Log.Information("☢️ NUCLEAR BOOTSTRAP: Dropping all tables...");
+            await dbContext.Database.EnsureDeletedAsync();
+            Log.Information("☢️ NUCLEAR BOOTSTRAP: Running fresh migrations...");
+            await dbContext.Database.MigrateAsync();
+            Log.Information("☢️ NUCLEAR BOOTSTRAP: Seeding data...");
+            await DatabaseSeeder.SeedAsync(dbContext, userManager, roleManager);
+            return Ok(new {
+                Status = "Nuclear Bootstrap Successful",
+                Timestamp = DateTime.UtcNow,
+                Message = "All tables dropped and recreated with unified schema. 21 users seeded."
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Nuclear Bootstrap Failed", details = ex.Message, inner = ex.InnerException?.Message });
+        }
     }
 
     [HttpGet("ping")]

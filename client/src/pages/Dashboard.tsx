@@ -1,25 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { LogOut, LayoutDashboard, Send, Users, Activity, Settings, PlusCircle, Search, FileText } from 'lucide-react';
+import { LogOut, LayoutDashboard, Send, Users, Activity, Settings, PlusCircle, Search, FileText, Menu, X } from 'lucide-react';
 import ProposalWizard from '../components/ProposalWizard';
 import StudentProposals from '../components/StudentProposals';
 import SupervisorExplore from '../components/SupervisorExplore';
+import SupervisorMatches from '../components/SupervisorMatches';
 import LeaderOverview from '../components/LeaderOverview';
 import AcademicPortal from '../components/AcademicPortal';
+import api from '../api/axios';
 
 const Dashboard: React.FC = () => {
     const { user, clearAuth } = useAuthStore();
     const [activeTab, setActiveTab] = useState('overview');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    
+    // Match State
+    const [myMatchId, setMyMatchId] = useState<string | null>(null);
 
     const isStudent = user?.roles.includes('Student');
     const isSupervisor = user?.roles.includes('Supervisor');
     const isModuleLeader = user?.roles.includes('ModuleLeader') || user?.roles.includes('Admin');
+
+    useEffect(() => {
+        const fetchMatch = async () => {
+            try {
+                const res = await api.get('/matches/my');
+                if (res.data && res.data.length > 0) {
+                    setMyMatchId(res.data[0].id); // Get first match (student has 1, supervisor can select later but defaults to 1st for MVP)
+                }
+            } catch (err) {
+                console.error("Failed to fetch matches");
+            }
+        };
+        fetchMatch();
+    }, []);
     
     return (
-        <div className="flex h-screen bg-slate-950 font-sans">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-950 font-sans overflow-hidden">
+            {/* Mobile Header */}
+            <div className="md:hidden flex justify-between items-center p-4 border-b border-white/5 glass-card">
+                <h2 className="text-xl font-extrabold tracking-tighter text-white">
+                    <span className="text-[#39b54a]">NSBM</span> 
+                    <span className="text-[#0054a6] ml-1">PORTAL</span>
+                </h2>
+                <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white p-2">
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
             {/* Sidebar */}
-            <aside className="w-72 glass-card border-r border-white/5 flex flex-col">
-                <div className="p-8">
+            <aside className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex absolute md:relative z-50 w-full md:w-72 h-full glass-card border-r border-white/5 flex-col bg-slate-950/95 md:bg-transparent backdrop-blur-xl transition-all`}>
+                <div className="hidden md:block p-8">
                     {/* Placeholder for NSBM Logo - User should place logo at /public/nsbm-logo.png */}
                     <div className="flex flex-col gap-1">
                         <img src="/nsbm-logo.png" alt="NSBM Logo" className="w-full h-auto mb-2" onError={(e) => { e.currentTarget.style.display='none'; }} />
@@ -145,14 +176,20 @@ const Dashboard: React.FC = () => {
                     {activeTab === 'my' && isStudent && <StudentProposals />}
                     {activeTab === 'browse' && isSupervisor && <SupervisorExplore />}
                     {activeTab === 'metrics' && isModuleLeader && <LeaderOverview />}
-                    {activeTab === 'academic' && <AcademicPortal matchId={user?.id || ""} role={user?.roles[0] || ""} />}
                     
-                    {activeTab === 'matches' && (
-                        <div className="flex flex-col items-center justify-center h-64 text-center">
-                            <Users size={48} className="text-slate-700 mb-4" />
-                            <p className="text-slate-500">You haven't confirmed any matches yet. Browse available projects to get started.</p>
-                        </div>
+                    {activeTab === 'academic' && (
+                        myMatchId ? (
+                            <AcademicPortal matchId={myMatchId} role={user?.roles[0] || ""} />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-64 text-center">
+                                <FileText size={48} className="text-slate-700 mb-4" />
+                                <h3 className="text-xl font-bold text-slate-300">No Active Match</h3>
+                                <p className="text-slate-500 mt-2">You need a confirmed match to access the Academic Hub.</p>
+                            </div>
+                        )
                     )}
+                    
+                    {activeTab === 'matches' && isSupervisor && <SupervisorMatches />}
                 </div>
             </main>
         </div>

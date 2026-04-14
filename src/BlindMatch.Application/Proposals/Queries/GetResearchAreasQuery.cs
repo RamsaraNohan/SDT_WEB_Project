@@ -19,9 +19,11 @@ public class GetResearchAreasQueryHandler : IRequestHandler<GetResearchAreasQuer
 
     public async Task<List<ResearchAreaDto>> Handle(GetResearchAreasQuery request, CancellationToken cancellationToken)
     {
-        return await _context.ResearchAreas
-            .Select(a => new ResearchAreaDto(a.Id, a.Name))
+        var areas = await _context.ResearchAreas
+            .Select(a => new { a.Id, a.Name })
             .OrderBy(a => a.Name)
             .ToListAsync(cancellationToken);
+
+        return areas.Select(a => new ResearchAreaDto(a.Id, a.Name)).ToList();
     }
 }

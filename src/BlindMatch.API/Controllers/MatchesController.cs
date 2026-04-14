@@ -39,4 +39,11 @@ public class MatchesController : ControllerBase
             return BadRequest(new { message = "You have reached your maximum supervision capacity." });
         }
     }
+
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyMatches()
+    {
+        var result = await _mediator.Send(new BlindMatch.Application.Matches.Queries.GetMyMatchesQuery());
+        return Ok(result);
+    }
 }
