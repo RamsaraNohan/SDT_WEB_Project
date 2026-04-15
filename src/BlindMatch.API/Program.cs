@@ -241,28 +241,28 @@ try
     app.MapControllers();
     app.MapHub<BlindMatch.API.Hubs.RevealHub>("/hubs/reveal");
 
-    // 🔥 2. ZERO-DOWNTIME MIGRATION BRIDGE
-    // We run migrations in the background to prevent Azure 500.37 Startup timeouts
-    _ = Task.Run(async () => {
-        try {
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                var userManager = services.GetRequiredService<UserManager<User>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                await context.Database.MigrateAsync();
+    // 🔥 2. ZERO-DOWNTIME MIGRATION BRIDGE (Synchronous for Integrity)
+    try {
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            
+            Log.Information("🚀 STARTUP STAGE 1: Applying Database Migrations...");
+            await context.Database.MigrateAsync();
 
-                Log.Information("🚀 BACKGROUND STAGE 2: Starting Database Seeding...");
-                await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
-                
-                Log.Information("🚀 BACKGROUND STAGE 3: System Fully Synchronized.");
-            }
+            Log.Information("🚀 STARTUP STAGE 2: Starting Database Seeding...");
+            await DatabaseSeeder.SeedAsync(context, userManager, roleManager);
+            
+            Log.Information("🚀 STARTUP STAGE 3: System Fully Synchronized.");
         }
-        catch (Exception ex) {
-            Log.Error(ex, "❌ Background Migration Failed");
-        }
-    });
+    }
+    catch (Exception ex) {
+        Log.Error(ex, "❌ Startup Migration/Seeding Failed");
+        // We continue so diagnostic endpoints still work
+    }
 
     app.Run();
 }

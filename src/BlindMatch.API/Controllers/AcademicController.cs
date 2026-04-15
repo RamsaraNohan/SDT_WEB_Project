@@ -25,6 +25,10 @@ public class AcademicController : ControllerBase
         _mediator = mediator;
     }
 
+    [AllowAnonymous]
+    [HttpGet("ping")]
+    public IActionResult Ping() => Ok(new { Message = "AcademicController is LIVE", Version = "2.1.1" });
+
     // --- MEETINGS ---
 
     [HttpPost("meetings")]
