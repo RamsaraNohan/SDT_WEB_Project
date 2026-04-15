@@ -37,10 +37,11 @@ const StudentSettings: React.FC = () => {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-slate-500 block mb-1">Full Name</label>
+            <label className="text-xs text-slate-500 block mb-1">Full Name (Read-only)</label>
             <input
-              defaultValue={user?.fullName}
-              className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-white"
+              value={user?.fullName}
+              readOnly
+              className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl text-slate-400 cursor-not-allowed"
             />
           </div>
           <div>
@@ -52,9 +53,7 @@ const StudentSettings: React.FC = () => {
             />
           </div>
         </div>
-        <button className="mt-4 px-6 py-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/30 transition-all font-bold text-sm">
-          Save Profile
-        </button>
+        <p className="mt-4 text-xs text-slate-500">Profile data is locked. Contact your Module Leader for name corrections.</p>
       </div>
 
       {/* Notification Preferences */}

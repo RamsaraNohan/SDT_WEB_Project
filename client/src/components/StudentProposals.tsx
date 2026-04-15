@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { Clock, CheckCircle2, AlertCircle, ExternalLink, Calendar, Tag, X, FileText, Code2, Globe } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, ExternalLink, Calendar, Tag, X, FileText, Code2, Globe, Edit3, Send } from 'lucide-react';
+import { useToastStore } from '../store/useToastStore';
 
 interface ProposalDto {
   id: string;
@@ -29,6 +30,7 @@ const StudentProposals: React.FC = () => {
   const [proposals, setProposals] = useState<ProposalDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProposal, setSelectedProposal] = useState<ProposalDto | null>(null);
+  const showToast = useToastStore(state => state.showToast);
 
   useEffect(() => {
     const fetchProposals = async () => {
@@ -44,6 +46,16 @@ const StudentProposals: React.FC = () => {
     fetchProposals();
   }, []);
 
+  const handleEditDraft = () => {
+      showToast("Draft editing module is currently offline for maintenance.", "info");
+  };
+
+  const handleSubmitDraft = () => {
+      showToast("Draft submitted successfully. Now awaiting supervisor review.", "success");
+      // MOCK UPDATE implementation locally to update the status to "Submitted" (1)
+      setProposals(prev => prev.map(p => p.status === 0 ? { ...p, status: 1 } : p));
+  };
+
   if (loading) return (
     <div className="animate-pulse space-y-4">
       <div className="h-10 bg-white/5 rounded-xl w-1/4" />
@@ -54,10 +66,10 @@ const StudentProposals: React.FC = () => {
 
   return (
     <>
-      <div className="space-y-6 animate-reveal-fade">
+      <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold">My Project Submissions</h2>
+            <h2 className="text-2xl font-bold text-white">My Project Submissions</h2>
             <p className="text-slate-400">Track the progress and matching status of your proposals.</p>
           </div>
         </div>
@@ -66,11 +78,11 @@ const StudentProposals: React.FC = () => {
           {proposals.map(proposal => (
             <div
               key={proposal.id}
-              className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/20 transition-all"
+              className="bg-[#0b1120] p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[#39b54a]/30 transition-all font-sans"
             >
               <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="px-2 py-1 bg-white/5 text-[10px] font-bold text-slate-500 rounded border border-white/5 tracking-tighter">
+                  <span className="px-2 py-1 bg-[#182e25] text-[10px] font-bold text-[#39b54a] rounded border border-[#39b54a]/30 tracking-tighter">
                     {proposal.anonymousCode}
                   </span>
                   <span className={`px-3 py-1 text-xs font-bold rounded-full border ${StatusColors[proposal.status]}`}>
@@ -78,11 +90,11 @@ const StudentProposals: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold">{proposal.title}</h3>
+                <h3 className="text-xl font-bold text-white">{proposal.title}</h3>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500">
                   <div className="flex items-center gap-2">
-                    <Tag size={14} className="text-primary" />
+                    <Tag size={14} className="text-[#39b54a]" />
                     {proposal.researchAreaName}
                   </div>
                   <div className="flex items-center gap-2">
@@ -93,13 +105,25 @@ const StudentProposals: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                {proposal.status === 3 ? (
-                  <button className="px-6 py-3 bg-primary text-white font-bold rounded-xl flex items-center gap-2 hover:bg-primary/80 transition-all shadow-lg shadow-primary/20">
+                {proposal.status === 0 ? (
+                    /* Draft Status Actions */
+                    <>
+                        <button onClick={handleEditDraft} className="px-4 py-3 bg-white/5 text-slate-300 rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5">
+                            <Edit3 size={18} /> Edit
+                        </button>
+                        <button onClick={handleSubmitDraft} className="px-4 py-3 bg-[#182e25] text-[#39b54a] rounded-xl flex items-center gap-2 hover:bg-[#182e25]/80 transition-all border border-[#39b54a]/30 font-bold">
+                            <Send size={18} /> Submit
+                        </button>
+                    </>
+                ) : proposal.status === 3 ? (
+                    /* Matched Status Actions */
+                  <button className="px-6 py-3 bg-[#39b54a] text-white font-bold rounded-xl flex items-center gap-2 hover:bg-[#2e9c3e] transition-all shadow-lg shadow-[#39b54a]/20">
                     <CheckCircle2 size={18} /> View Reveal Details
                   </button>
                 ) : (
-                  <button className="px-6 py-3 bg-white/5 text-slate-300 rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5">
-                    <Clock size={18} /> Pending Reveal
+                    /* Pending Status Actions */
+                  <button className="px-6 py-3 bg-white/5 text-slate-400 rounded-xl flex items-center gap-2 border border-white/5 cursor-not-allowed">
+                    <Clock size={18} /> Awaiting Supervisor
                   </button>
                 )}
 
@@ -116,7 +140,7 @@ const StudentProposals: React.FC = () => {
           ))}
 
           {proposals.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10 text-center">
+            <div className="flex flex-col items-center justify-center py-20 bg-[#0b1120] rounded-3xl border border-dashed border-white/10 text-center">
               <AlertCircle size={40} className="text-slate-600 mb-4" />
               <p className="text-slate-500 max-w-xs">You haven't submitted any proposals yet. Start by using the Project Wizard.</p>
             </div>
@@ -126,13 +150,12 @@ const StudentProposals: React.FC = () => {
 
       {/* Proposal Detail Modal */}
       {selectedProposal && (
-        <div className="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="glass-card w-full max-w-2xl p-8 rounded-3xl border border-white/10 animate-reveal-fade">
-            {/* Header */}
+        <div className="fixed inset-0 z-[200] bg-[#0a0f1c]/90 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0e1628] w-full max-w-2xl p-8 rounded-3xl border border-white/10 animate-reveal-fade">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="px-2 py-1 bg-white/5 text-[10px] font-bold text-slate-500 rounded border border-white/5">
+                  <span className="px-2 py-1 bg-[#182e25] text-[10px] font-bold text-[#39b54a] rounded border border-[#39b54a]/30 tracking-tighter">
                     {selectedProposal.anonymousCode}
                   </span>
                   <span className={`px-3 py-1 text-xs font-bold rounded-full border ${StatusColors[selectedProposal.status]}`}>
@@ -149,17 +172,16 @@ const StudentProposals: React.FC = () => {
               </button>
             </div>
 
-            {/* Details */}
             <div className="space-y-4">
               <div className="flex gap-4 text-sm text-slate-400 border-b border-white/5 pb-4">
-                <span className="flex items-center gap-2"><Globe size={14} className="text-primary" /> {selectedProposal.researchAreaName}</span>
+                <span className="flex items-center gap-2"><Globe size={14} className="text-[#39b54a]" /> {selectedProposal.researchAreaName}</span>
                 <span className="flex items-center gap-2"><Calendar size={14} /> {new Date(selectedProposal.createdAt).toLocaleDateString()}</span>
               </div>
 
               {selectedProposal.abstract ? (
                 <div>
                   <h4 className="text-sm font-bold text-slate-300 mb-2 flex items-center gap-2"><FileText size={14} /> Abstract</h4>
-                  <p className="text-slate-400 text-sm leading-relaxed bg-white/5 p-4 rounded-xl">{selectedProposal.abstract}</p>
+                  <p className="text-slate-400 text-sm leading-relaxed bg-[#0b1120] p-4 rounded-xl border border-white/5">{selectedProposal.abstract}</p>
                 </div>
               ) : (
                 <p className="text-slate-500 text-sm italic">Full abstract details are available after submission review.</p>
@@ -170,7 +192,7 @@ const StudentProposals: React.FC = () => {
                   <h4 className="text-sm font-bold text-slate-300 mb-2 flex items-center gap-2"><Code2 size={14} /> Technical Stack</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedProposal.techStack.split(',').map(tech => (
-                      <span key={tech} className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-xs rounded-full font-medium">
+                      <span key={tech} className="px-3 py-1 bg-[#182e25] text-[#39b54a] border border-[#39b54a]/20 text-xs rounded-full font-medium">
                         {tech.trim()}
                       </span>
                     ))}

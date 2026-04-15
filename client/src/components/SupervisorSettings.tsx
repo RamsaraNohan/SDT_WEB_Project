@@ -52,9 +52,9 @@ const SupervisorSettings: React.FC = () => {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { label: 'Full Name', value: user?.fullName, readOnly: false },
+            { label: 'Full Name', value: user?.fullName, readOnly: true },
             { label: 'Email', value: user?.email, readOnly: true },
-            { label: 'Department', value: 'School of Computing', readOnly: false },
+            { label: 'Department', value: 'School of Computing', readOnly: true },
             { label: 'Office Location', value: 'A-Block, Room 205', readOnly: false },
           ].map(field => (
             <div key={field.label}>
@@ -65,15 +65,18 @@ const SupervisorSettings: React.FC = () => {
                 className={`w-full px-4 py-3 border rounded-xl outline-none transition-all text-white ${
                   field.readOnly
                     ? 'bg-white/5 border-white/5 text-slate-400 cursor-not-allowed'
-                    : 'bg-slate-900/50 border-white/10 focus:ring-2 focus:ring-blue-500'
+                    : 'bg-[#0b1120] border-white/10 focus:ring-2 focus:ring-blue-500'
                 }`}
               />
             </div>
           ))}
         </div>
-        <button className="mt-4 px-6 py-2.5 bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-xl hover:bg-blue-500/30 transition-all font-bold text-sm">
-          Save Profile
-        </button>
+        <div className="flex justify-between items-center mt-4">
+          <p className="mt-4 text-xs text-slate-500">Core profile data is locked. Contact Module Leader for name/department corrections.</p>
+          <button className="px-6 py-2.5 bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-xl hover:bg-blue-500/30 transition-all font-bold text-sm">
+            Save Location
+          </button>
+        </div>
       </div>
 
       {/* Expertise Areas */}
