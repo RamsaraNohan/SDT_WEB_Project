@@ -4,6 +4,7 @@ using BlindMatch.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
 namespace BlindMatch.API.Controllers;
 
@@ -12,6 +13,8 @@ namespace BlindMatch.API.Controllers;
 [Route("api/[controller]")]
 public class AcademicController : ControllerBase
 {
+    private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUser;
     private readonly IMediator _mediator;
 
     public AcademicController(IApplicationDbContext context, ICurrentUserService currentUser, IMediator mediator)
