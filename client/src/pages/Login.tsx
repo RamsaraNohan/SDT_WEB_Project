@@ -84,9 +84,9 @@ const Login: React.FC = () => {
           </div>
           <h1 className="text-3xl font-black flex gap-2 tracking-tight">
              <span className="text-[#39b54a]">NSBM</span>
-             <span className="text-[#0054a6]">PORTAL</span>
+             <span className="text-[#0054a6]">BLIND-MATCH</span>
           </h1>
-          <p className="text-slate-300 font-medium mt-2">Green University Project Tracker</p>
+          <p className="text-slate-300 font-medium mt-2">Project Matching & Supervision Portal</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

@@ -185,3 +185,31 @@ HTTP: GET /
 2026-04-15 23:19:07.931 +05:30 [INF] Uploading file to wwwroot\uploads\f310ed4b-5ba6-4359-9115-d0a7a65ea704.pdf
 2026-04-15 23:19:35.736 +05:30 [INF] Uploading iteration for match "f8d83083-d31c-4fcd-a823-748eae232d27", file 372-3721900_transparent-green-design-png-nsbm-green-university-town.png
 2026-04-15 23:19:35.737 +05:30 [INF] Uploading file to wwwroot\uploads\2bee5bc5-e7dd-46f8-8e17-dd768d36f2a0.png
+2026-04-15 23:21:55.955 +05:30 [WRN] ⚠️ Azure Configuration Warning: Connection string may be invalid.
+2026-04-15 23:21:56.016 +05:30 [INF] Start installing Hangfire SQL objects...
+2026-04-15 23:21:56.535 +05:30 [INF] Hangfire SQL objects installed.
+2026-04-15 23:21:56.697 +05:30 [INF] 🚀 STARTUP STAGE 1: Applying Database Migrations...
+2026-04-15 23:21:57.029 +05:30 [WRN] Entity 'Proposal' has a global query filter defined and is the required end of a relationship with the entity 'Match'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 23:21:57.030 +05:30 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'RefreshToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 23:21:57.030 +05:30 [WRN] Entity 'ResearchArea' has a global query filter defined and is the required end of a relationship with the entity 'SupervisorExpertise'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 23:21:57.066 +05:30 [WRN] No store type was specified for the decimal property 'AssignedMarks' on entity type 'ProjectIteration'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-04-15 23:21:57.299 +05:30 [INF] 🚀 STARTUP STAGE 2: Starting Database Seeding...
+2026-04-15 23:21:57.812 +05:30 [INF] 🚀 STARTUP STAGE 3: System Fully Synchronized.
+2026-04-15 23:21:57.930 +05:30 [INF] Starting Hangfire Server using job storage: 'SQL Server: (localdb)\mssqllocaldb@BlindMatchPAS_DB'
+2026-04-15 23:21:57.930 +05:30 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2026-04-15 23:21:57.930 +05:30 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-04-15 23:21:58.031 +05:30 [INF] Server desktop-i9qfuhf:24512:4d8dfb81 successfully announced in 91.8149 ms
+2026-04-15 23:21:58.033 +05:30 [INF] Server desktop-i9qfuhf:24512:4d8dfb81 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-04-15 23:21:58.038 +05:30 [INF] Server desktop-i9qfuhf:24512:4d8dfb81 all the dispatchers started
+2026-04-15 23:22:05.659 +05:30 [WRN] Failed to determine the https port for redirect.
+2026-04-15 23:23:02.600 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-04-15 23:26:08.710 +05:30 [INF] Submitting proposal for student "ae4cb6a2-08dd-4d1f-97a6-08de9b0e251e"
+2026-04-15 23:26:58.058 +05:30 [INF] 1 servers were removed due to timeout
+2026-04-15 23:27:37.684 +05:30 [INF] Supervisor "46754b97-f7c6-4b94-9798-08de9b0e251e" expressing interest in proposal "e155d90c-ba1f-4e30-aaa7-da9a0057767f"
+2026-04-15 23:28:00.285 +05:30 [INF] Supervisor "46754b97-f7c6-4b94-9798-08de9b0e251e" confirming match for proposal "e155d90c-ba1f-4e30-aaa7-da9a0057767f"
+2026-04-15 23:28:00.390 +05:30 [WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+2026-04-15 23:28:00.480 +05:30 [WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
