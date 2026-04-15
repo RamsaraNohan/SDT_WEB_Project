@@ -171,7 +171,7 @@ try
         });
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddApplicationPart(typeof(Program).Assembly);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
