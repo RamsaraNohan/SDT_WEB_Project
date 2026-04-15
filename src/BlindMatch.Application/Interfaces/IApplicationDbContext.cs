@@ -17,6 +17,7 @@ public interface IApplicationDbContext
     DbSet<SupervisorReveal> SupervisorReveals { get; }
     DbSet<SupervisionMeeting> SupervisionMeetings { get; }
     DbSet<FinalSubmission> FinalSubmissions { get; }
+    DbSet<ProjectIteration> ProjectIterations { get; }
     DbSet<ProjectScore> ProjectScores { get; }
     DbSet<AuditLog> AuditLogs { get; }
     DbSet<DeadlineSettings> DeadlineSettings { get; }

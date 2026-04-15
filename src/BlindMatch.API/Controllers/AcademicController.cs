@@ -12,13 +12,13 @@ namespace BlindMatch.API.Controllers;
 [Route("api/[controller]")]
 public class AcademicController : ControllerBase
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUser;
+    private readonly IMediator _mediator;
 
-    public AcademicController(IApplicationDbContext context, ICurrentUserService currentUser)
+    public AcademicController(IApplicationDbContext context, ICurrentUserService currentUser, IMediator mediator)
     {
         _context = context;
         _currentUser = currentUser;
+        _mediator = mediator;
     }
 
     // --- MEETINGS ---
@@ -26,7 +26,6 @@ public class AcademicController : ControllerBase
     [HttpPost("meetings")]
     public async Task<IActionResult> ScheduleMeeting([FromBody] SupervisionMeeting meeting)
     {
-        // Only supervisors or students in the match can log meetings
         var match = await _context.Matches.FindAsync(meeting.MatchId);
         if (match == null) return NotFound("Match not found.");
 
@@ -40,43 +39,59 @@ public class AcademicController : ControllerBase
     {
         var meetings = await _context.SupervisionMeetings
             .Where(m => m.MatchId == matchId)
-            .OrderByDescending(m => m.MeetingDate) // Correct Property
+            .OrderByDescending(m => m.MeetingDate)
             .ToListAsync();
         return Ok(meetings);
     }
 
-    // --- SUBMISSIONS ---
+    // --- ITERATIONS (NEW WORKFLOW) ---
 
-    [HttpPost("submissions")]
-    public async Task<IActionResult> SubmitProject([FromBody] FinalSubmission submission)
+    [HttpGet("iterations/{matchId}")]
+    public async Task<IActionResult> GetIterations(Guid matchId)
     {
-        // Check for matching via proposal
-        var proposal = await _context.Proposals.FindAsync(submission.ProposalId);
-        if (proposal == null) return NotFound("Proposal not found.");
-
-        _context.FinalSubmissions.Add(submission);
-        
-        // Update proposal status
-        proposal.Status = ProposalStatus.Submitted;
-
-        await _context.SaveChangesAsync();
-        return Ok(submission);
+        var iterations = await _context.ProjectIterations
+            .Where(i => i.MatchId == matchId)
+            .OrderByDescending(i => i.IterationNumber)
+            .ToListAsync();
+        return Ok(iterations);
     }
 
-    // --- SCORING ---
+    [HttpPost("iterations")]
+    public async Task<IActionResult> SubmitIteration([FromBody] SubmitIterationCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return Ok(new { id });
+    }
+
+    [Authorize(Roles = "Supervisor,Admin")]
+    [HttpPost("iterations/review")]
+    public async Task<IActionResult> ReviewIteration([FromBody] ReviewIterationCommand command)
+    {
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    // --- FINAL SCORING ---
 
     [Authorize(Roles = "Supervisor,Admin")]
     [HttpPost("score")]
-    public async Task<IActionResult> SubmitScore([FromBody] ProjectScore score)
+    public async Task<IActionResult> SubmitFinalScore([FromBody] ProjectScore score)
     {
         var match = await _context.Matches.FindAsync(score.MatchId);
         if (match == null) return NotFound("Match not found.");
 
-        // Check if already scored
         var existing = await _context.ProjectScores.FirstOrDefaultAsync(s => s.MatchId == score.MatchId);
-        if (existing != null) return BadRequest("Project already scored.");
-
-        _context.ProjectScores.Add(score);
+        if (existing != null) 
+        {
+            existing.OverallScore = score.OverallScore;
+            existing.SupervisorFeedback = score.SupervisorFeedback;
+            existing.GradedAt = DateTime.UtcNow;
+        }
+        else
+        {
+            _context.ProjectScores.Add(score);
+        }
+        
         await _context.SaveChangesAsync();
         return Ok(score);
     }

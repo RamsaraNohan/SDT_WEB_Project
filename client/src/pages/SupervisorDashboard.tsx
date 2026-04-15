@@ -143,7 +143,7 @@ const SupervisorDashboard: React.FC = () => {
       <main className="flex-1 overflow-auto bg-[#0a0f1c] pb-8">
         <header className="flex justify-between items-center px-10 py-8">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">Welcome back, Faculty</h1>
+            <h1 className="text-2xl font-bold text-white mb-1">Welcome back, {user?.fullName || 'Faculty'}</h1>
             <p className="text-sm text-slate-400">Portal Status: <span className="text-blue-400 font-medium">Session Active</span></p>
           </div>
           <div className="flex items-center gap-6">

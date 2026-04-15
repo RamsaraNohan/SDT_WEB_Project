@@ -24,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
     public DbSet<SupervisorReveal> SupervisorReveals => Set<SupervisorReveal>();
     public DbSet<SupervisionMeeting> SupervisionMeetings => Set<SupervisionMeeting>();
     public DbSet<FinalSubmission> FinalSubmissions => Set<FinalSubmission>();
+    public DbSet<ProjectIteration> ProjectIterations => Set<ProjectIteration>();
     public DbSet<ProjectScore> ProjectScores => Set<ProjectScore>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<DeadlineSettings> DeadlineSettings => Set<DeadlineSettings>();

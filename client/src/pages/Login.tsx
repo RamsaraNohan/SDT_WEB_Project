@@ -34,7 +34,11 @@ function extractEmail(payload: Record<string, any>): string {
 }
 
 function extractName(payload: Record<string, any>): string {
-  return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload['name'] || payload['given_name'] || 'User';
+  return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 
+         payload['fullname'] || 
+         payload['name'] || 
+         payload['given_name'] || 
+         'User';
 }
 
 const Login: React.FC = () => {

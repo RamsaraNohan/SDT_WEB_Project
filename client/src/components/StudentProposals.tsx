@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { Clock, CheckCircle2, AlertCircle, ExternalLink, Calendar, Tag, X, FileText, Code2, Globe, Edit3, Send } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, ExternalLink, Calendar, Tag, X, FileText, Code2, Globe, Edit3, Send, Loader2 } from 'lucide-react';
 import { useToastStore } from '../store/useToastStore';
 
 interface ProposalDto {
@@ -9,6 +9,7 @@ interface ProposalDto {
   anonymousCode: string;
   status: number;
   researchAreaName: string;
+  researchAreaId: string;
   createdAt: string;
   abstract?: string;
   techStack?: string;
@@ -29,31 +30,66 @@ const StatusLabels: Record<number, string> = {
 const StudentProposals: React.FC = () => {
   const [proposals, setProposals] = useState<ProposalDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState<string | null>(null);
   const [selectedProposal, setSelectedProposal] = useState<ProposalDto | null>(null);
+  const [editProposal, setEditProposal] = useState<ProposalDto | null>(null);
+  const [areas, setAreas] = useState<{ id: string, name: string }[]>([]);
+  
   const showToast = useToastStore(state => state.showToast);
 
-  useEffect(() => {
-    const fetchProposals = async () => {
-      try {
-        const response = await api.get('/proposals/my');
-        setProposals(response.data);
-      } catch (err) {
-        console.error('Failed to fetch my proposals');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProposals();
-  }, []);
-
-  const handleEditDraft = () => {
-      showToast("Draft editing module is currently offline for maintenance.", "info");
+  const fetchProposals = async () => {
+    try {
+      const response = await api.get('/proposals/my');
+      setProposals(response.data);
+    } catch (err) {
+      console.error('Failed to fetch my proposals');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmitDraft = () => {
-      showToast("Draft submitted successfully. Now awaiting supervisor review.", "success");
-      // MOCK UPDATE implementation locally to update the status to "Submitted" (1)
-      setProposals(prev => prev.map(p => p.status === 0 ? { ...p, status: 1 } : p));
+  useEffect(() => {
+    fetchProposals();
+    api.get('/proposals/areas').then(res => setAreas(res.data)).catch(() => {});
+  }, []);
+
+  const handleEditDraft = (proposal: ProposalDto) => {
+      setEditProposal(proposal);
+  };
+
+  const handleUpdateDraft = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!editProposal) return;
+      
+      setSubmitting(editProposal.id);
+      try {
+          await api.put(`/proposals/my/draft/${editProposal.id}`, {
+              title: editProposal.title,
+              abstract: editProposal.abstract,
+              techStack: editProposal.techStack,
+              researchAreaId: editProposal.researchAreaId
+          });
+          showToast("Draft updated successfully.", "success");
+          setEditProposal(null);
+          fetchProposals();
+      } catch (err: any) {
+          showToast(err.response?.data?.message || "Failed to update draft.", "error");
+      } finally {
+          setSubmitting(null);
+      }
+  };
+
+  const handleSubmitDraft = async (id: string) => {
+      setSubmitting(id);
+      try {
+          await api.post(`/proposals/my/submit/${id}`);
+          showToast("Proposal submitted successfully to the pool.", "success");
+          fetchProposals();
+      } catch (err: any) {
+          showToast(err.response?.data?.message || "Submission failed.", "error");
+      } finally {
+          setSubmitting(null);
+      }
   };
 
   if (loading) return (
@@ -106,28 +142,31 @@ const StudentProposals: React.FC = () => {
 
               <div className="flex items-center gap-3">
                 {proposal.status === 0 ? (
-                    /* Draft Status Actions */
                     <>
-                        <button onClick={handleEditDraft} className="px-4 py-3 bg-white/5 text-slate-300 rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5">
+                        <button 
+                            onClick={() => handleEditDraft(proposal)} 
+                            className="px-4 py-3 bg-white/5 text-slate-300 rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5"
+                        >
                             <Edit3 size={18} /> Edit
                         </button>
-                        <button onClick={handleSubmitDraft} className="px-4 py-3 bg-[#182e25] text-[#39b54a] rounded-xl flex items-center gap-2 hover:bg-[#182e25]/80 transition-all border border-[#39b54a]/30 font-bold">
-                            <Send size={18} /> Submit
+                        <button 
+                            onClick={() => handleSubmitDraft(proposal.id)} 
+                            disabled={submitting === proposal.id}
+                            className="px-4 py-3 bg-[#182e25] text-[#39b54a] rounded-xl flex items-center gap-2 hover:bg-[#182e25]/80 transition-all border border-[#39b54a]/30 font-bold disabled:opacity-50"
+                        >
+                            {submitting === proposal.id ? <Loader2 size={18} className="animate-spin" /> : <><Send size={18} /> Submit</>}
                         </button>
                     </>
                 ) : proposal.status === 3 ? (
-                    /* Matched Status Actions */
                   <button className="px-6 py-3 bg-[#39b54a] text-white font-bold rounded-xl flex items-center gap-2 hover:bg-[#2e9c3e] transition-all shadow-lg shadow-[#39b54a]/20">
                     <CheckCircle2 size={18} /> View Reveal Details
                   </button>
                 ) : (
-                    /* Pending Status Actions */
                   <button className="px-6 py-3 bg-white/5 text-slate-400 rounded-xl flex items-center gap-2 border border-white/5 cursor-not-allowed">
                     <Clock size={18} /> Awaiting Supervisor
                   </button>
                 )}
 
-                {/* External Link — opens detail modal */}
                 <button
                   onClick={() => setSelectedProposal(proposal)}
                   title="View Full Proposal"
@@ -147,6 +186,85 @@ const StudentProposals: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Draft Edit Modal */}
+      {editProposal && (
+        <div className="fixed inset-0 z-[200] bg-[#0a0f1c]/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#0e1628] w-full max-w-2xl my-auto p-8 rounded-3xl border border-white/10 shadow-2xl animate-reveal-fade">
+            <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <Edit3 className="text-[#39b54a]" /> Edit Draft Proposal
+                </h2>
+                <button onClick={() => setEditProposal(null)} className="p-2 hover:bg-white/5 rounded-full transition-all text-slate-400">
+                    <X size={24} />
+                </button>
+            </div>
+            
+            <form onSubmit={handleUpdateDraft} className="space-y-6">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-400">Proposal Title</label>
+                    <input 
+                        required
+                        className="w-full px-4 py-3 bg-[#0b1120] border border-white/10 rounded-xl focus:ring-2 focus:ring-[#39b54a]/50 outline-none text-white"
+                        value={editProposal.title}
+                        onChange={e => setEditProposal({...editProposal, title: e.target.value})}
+                    />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-400">Research Area</label>
+                        <select 
+                            required
+                            className="w-full px-4 py-3 bg-[#0b1120] border border-white/10 rounded-xl outline-none text-white focus:ring-2 focus:ring-[#39b54a]/50"
+                            value={editProposal.researchAreaId}
+                            onChange={e => setEditProposal({...editProposal, researchAreaId: e.target.value})}
+                        >
+                            {areas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                        </select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-400">Tech Stack</label>
+                        <input 
+                            required
+                            className="w-full px-4 py-3 bg-[#0b1120] border border-white/10 rounded-xl focus:ring-2 focus:ring-[#39b54a]/50 outline-none text-white"
+                            value={editProposal.techStack}
+                            onChange={e => setEditProposal({...editProposal, techStack: e.target.value})}
+                        />
+                    </div>
+                </div>
+                
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-400">Abstract</label>
+                    <textarea 
+                        required
+                        rows={6}
+                        className="w-full px-4 py-3 bg-[#0b1120] border border-white/10 rounded-xl focus:ring-2 focus:ring-[#39b54a]/50 outline-none text-white resize-none"
+                        value={editProposal.abstract}
+                        onChange={e => setEditProposal({...editProposal, abstract: e.target.value})}
+                    />
+                </div>
+                
+                <div className="flex justify-end gap-3 pt-4">
+                    <button 
+                        type="button" 
+                        onClick={() => setEditProposal(null)}
+                        className="px-6 py-3 bg-white/5 text-slate-300 rounded-xl hover:bg-white/10 transition-all font-bold"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        disabled={!!submitting}
+                        className="px-8 py-3 bg-[#39b54a] text-white rounded-xl hover:bg-[#2e9c3e] transition-all font-bold shadow-lg shadow-[#39b54a]/20 flex items-center gap-2"
+                    >
+                        {submitting === editProposal.id ? <Loader2 className="animate-spin" /> : 'Save Changes'}
+                    </button>
+                </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Proposal Detail Modal */}
       {selectedProposal && (
