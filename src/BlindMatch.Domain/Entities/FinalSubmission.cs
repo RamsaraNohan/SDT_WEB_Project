@@ -1,4 +1,5 @@
 using BlindMatch.Domain.Common;
+using System.Text.Json.Serialization;
 
 namespace BlindMatch.Domain.Entities;
 
@@ -10,5 +11,6 @@ public class FinalSubmission : BaseEntity
     public long FileSizeBytes { get; set; }
     public DateTime SubmittedAt { get; set; }
 
+    [JsonIgnore]
     public Proposal Proposal { get; set; } = null!;
 }

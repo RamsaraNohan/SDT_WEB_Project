@@ -31,6 +31,18 @@ const StudentDashboard: React.FC = () => {
                if (confirmed) setMyMatchId(confirmed.id);
            })
            .catch(() => {});
+
+        // Listen for internal tab switches
+        const handleSwitch = (e: any) => {
+            if (typeof e.detail === 'string') {
+                setActiveTab(e.detail);
+            } else if (e.detail?.id) {
+                setActiveTab(e.detail.id);
+            }
+        };
+
+        window.addEventListener('switchTab', handleSwitch);
+        return () => window.removeEventListener('switchTab', handleSwitch);
     }, []);
 
     const handleLogout = () => {
@@ -46,7 +58,7 @@ const StudentDashboard: React.FC = () => {
     const tabs = [
         { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={20} /> },
         { id: 'academic', label: 'Academic Hub', icon: <FileText size={20} /> },
-        { id: 'new', label: 'New Proposal', icon: <PlusCircle size={20} /> },
+        { id: 'new', label: 'Submit A Proposal', icon: <PlusCircle size={20} /> },
         { id: 'my', label: 'My Submissions', icon: <Send size={20} /> },
         { id: 'analytics', label: 'Analytics', icon: <Activity size={20} /> },
         { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },

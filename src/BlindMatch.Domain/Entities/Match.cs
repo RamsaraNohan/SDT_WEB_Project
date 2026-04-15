@@ -1,5 +1,6 @@
 using BlindMatch.Domain.Common;
 using BlindMatch.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace BlindMatch.Domain.Entities;
 
@@ -11,6 +12,8 @@ public class Match : BaseEntity
     public DateTime? ConfirmedAt { get; set; }
     public DateTime? RevealedAt { get; set; }
 
+    [JsonIgnore]
     public Proposal Proposal { get; set; } = null!;
+    [JsonIgnore]
     public User Supervisor { get; set; } = null!;
 }

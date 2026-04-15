@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History } from 'lucide-react';
+import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History, AlertCircle, Download } from 'lucide-react';
 import api from '../api/axios';
 import { useToastStore } from '../store/useToastStore';
 
@@ -18,6 +18,8 @@ interface Iteration {
     reviewedAt: string | null;
     assignedMarks: number | null;
     status: number; // 0: Pending, 1: Revision, 2: Approved
+    fileName: string | null;
+    fileUrl: string | null;
 }
 
 interface ProjectScore {
@@ -86,24 +88,34 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
         }
     };
 
-    const handleSubmitIteration = async () => {
-        if (!newIteration.content) return;
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        
+        if (file.size > 50 * 1024 * 1024) {
+            showToast("File exceeds 50MB limit.", "error");
+            return;
+        }
+
         setActionLoading(true);
+        const formData = new FormData();
+        formData.append('MatchId', matchId);
+        formData.append('File', file);
+
         try {
-            await api.post('/academic/iterations', {
-                matchId,
-                submissionContent: newIteration.content
+            await api.post('/academic/iterations/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
-            showToast("Iteration submitted for review.", "success");
+            showToast(`Version v${iterations.length + 1} uploaded successfully.`, "success");
             setShowIterationForm(false);
-            setNewIteration({ content: '' });
             fetchData();
-        } catch (e) {
-            showToast("Failed to submit iteration.", "error");
+        } catch (err: any) {
+            showToast(err.response?.data?.error || "Upload failed.", "error");
         } finally {
             setActionLoading(false);
         }
     };
+
 
     const handleReviewIteration = async () => {
         if (!showReviewForm) return;
@@ -232,10 +244,31 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#0b1120]/50">
                                         <div>
                                             <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Student Submission</h4>
-                                            <div className="p-4 bg-[#0a0f1c] rounded-2xl border border-white/5 text-sm text-slate-300 leading-relaxed italic">
-                                                "{it.submissionContent}"
+                                            <div className="p-4 bg-[#0a0f1c] rounded-2xl border border-white/5 text-sm text-slate-300 leading-relaxed italic relative group">
+                                                {it.fileName ? (
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <FileText className="text-[#39b54a]" size={20} />
+                                                            <div>
+                                                                <p className="font-bold text-slate-200">{it.fileName}</p>
+                                                                <p className="text-[10px] text-slate-500 uppercase">Version {it.iterationNumber}</p>
+                                                            </div>
+                                                        </div>
+                                                        <a 
+                                                            href={it.fileUrl?.startsWith('/') ? `${api.defaults.baseURL?.replace('/api', '')}${it.fileUrl}` : it.fileUrl || '#'} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-2 px-3 py-1.5 bg-[#39b54a]/10 text-[#39b54a] rounded-lg border border-[#39b54a]/20 hover:bg-[#39b54a]/20 transition-all font-bold text-[10px]"
+                                                        >
+                                                            DOWNLOAD
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    <span>"{it.submissionContent}"</span>
+                                                )}
                                             </div>
                                         </div>
+
                                         <div>
                                             <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Supervisor Feedback</h4>
                                             {it.supervisorFeedback ? (
@@ -372,27 +405,43 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
             {showIterationForm && (
                 <div className="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
                     <div className="bg-[#0e1628] w-full max-w-lg p-8 rounded-3xl border border-white/10 animate-reveal-slide">
-                        <h3 className="text-2xl font-bold mb-6 flex items-center gap-2"><Plus className="text-[#39b54a]" /> Submit New Iteration</h3>
-                        <div className="space-y-4">
-                            <p className="text-sm text-slate-400 mb-2">Provide the link to your latest document or paste the updated summary of your progress.</p>
-                            <div>
-                                <textarea 
-                                    className="w-full bg-[#0a0f1c] border border-white/10 rounded-xl p-4 h-48 text-white outline-none focus:ring-2 focus:ring-[#39b54a] resize-none" 
-                                    placeholder="e.g. Iteration 1 Updated with Github Link: github.com/user/project..."
-                                    value={newIteration.content}
-                                    onChange={e => setNewIteration({...newIteration, content: e.target.value})}
-                                ></textarea>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-bold flex items-center gap-2"><Plus className="text-[#39b54a]" /> New Submission (v{iterations.length + 1})</h3>
+                            <button onClick={() => setShowIterationForm(false)} className="text-slate-500 hover:text-white"><X size={24} className="" /></button>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="p-6 bg-[#0a0f1c] border-2 border-dashed border-white/5 rounded-3xl flex flex-col items-center justify-center hover:border-[#39b54a]/50 transition-all group relative">
+                                <FileText size={48} className="text-slate-700 mb-4 group-hover:text-[#39b54a] transition-all" />
+                                <p className="text-sm font-bold text-slate-300">Submit Milestone Document</p>
+                                <p className="text-xs text-slate-500 mt-2">PDF, DOCX, PNG or JPG up to 50MB</p>
+                                <input 
+                                    type="file" 
+                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                    onChange={handleFileUpload}
+                                    accept=".pdf,.docx,.png,.jpg,.jpeg"
+                                    disabled={actionLoading}
+                                />
+                                {actionLoading && (
+                                    <div className="absolute inset-0 bg-slate-950/50 flex flex-col items-center justify-center rounded-3xl backdrop-blur-sm">
+                                        <Loader2 className="animate-spin text-[#39b54a] mb-2" size={32} />
+                                        <p className="text-xs font-bold text-white">Uploading...</p>
+                                    </div>
+                                )}
                             </div>
-                            <div className="flex gap-4 pt-4">
-                                <button className="flex-1 p-4 text-slate-400 hover:text-white font-bold" onClick={() => setShowIterationForm(false)}>Cancel</button>
-                                <button disabled={actionLoading} className="flex-1 p-4 bg-[#39b54a] text-white rounded-xl font-bold shadow-lg shadow-[#39b54a]/20" onClick={handleSubmitIteration}>
-                                    {actionLoading ? <Loader2 className="animate-spin mx-auto" /> : 'Confirm Submission'}
-                                </button>
+                            
+                            <div className="flex items-center gap-4 text-[10px] text-slate-500 uppercase font-black tracking-widest bg-white/5 p-4 rounded-2xl border border-white/5">
+                                <AlertCircle size={14} className="text-amber-400" />
+                                <span>Note: Every submission is permanent and forced as a new version for academic integrity.</span>
                             </div>
+
+                            <button className="w-full py-4 bg-white/5 text-slate-400 font-bold rounded-2xl hover:bg-white/10 transition-all border border-white/5" onClick={() => setShowIterationForm(false)}>
+                                Close Window
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
+
 
             {/* Iteration Review Modal */}
             {showReviewForm && (

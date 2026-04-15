@@ -4,5 +4,6 @@ public enum IterationStatus
 {
     PendingReview = 0,
     RevisionRequested = 1,
-    Approved = 2
+    Approved = 2,
+    Submitted = 3
 }

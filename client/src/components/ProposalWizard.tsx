@@ -4,30 +4,33 @@ import { Send, CheckCircle2, AlertCircle, FileText, Code2, Globe } from 'lucide-
 
 const ProposalWizard: React.FC = () => {
   const [areas, setAreas] = useState<{ id: string, name: string }[]>([]);
+  const [existingProposals, setExistingProposals] = useState<any[]>([]);
+  const [hasActive, setHasActive] = useState(false);
+  const [formData, setFormData] = useState({ title: '', researchAreaId: '', techStack: '', abstract: '' });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const [formData, setFormData] = useState({
-    title: '',
-    abstract: '',
-    techStack: '',
-    researchAreaId: '',
-  });
+  const [success, setSuccess] = useState(false);
 
   const wordCount = formData.abstract.trim() === "" ? 0 : formData.abstract.trim().split(/\s+/).length;
   const isWordCountValid = wordCount >= 100 && wordCount <= 200;
 
   useEffect(() => {
-    const fetchAreas = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get('/proposals/areas'); // We'll add this endpoint to the backend shortly
-        setAreas(response.data);
+        const [areasRes, propsRes] = await Promise.all([
+            api.get('/proposals/areas'),
+            api.get('/proposals/my')
+        ]);
+        setAreas(areasRes.data);
+        setExistingProposals(propsRes.data);
+        
+        const active = propsRes.data.some((p: any) => p.status === 1 || p.status === 2 || p.status === 3);
+        setHasActive(active);
       } catch (err) {
-        console.error('Failed to fetch research areas');
+        console.error('Failed to fetch initial wizard data');
       }
     };
-    fetchAreas();
+    fetchData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,11 +42,34 @@ const ProposalWizard: React.FC = () => {
       await api.post('/proposals', formData);
       setSuccess(true);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Submission failed. Check your word count.');
+      setError(err.response?.data?.error || err.response?.data?.message || 'Submission failed. Check your word count.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (hasActive) {
+    const matched = existingProposals.find(p => p.status === 3);
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center animate-reveal-fade bg-white/5 rounded-3xl border border-white/5">
+        <div className="w-20 h-20 bg-amber-400/20 rounded-full flex items-center justify-center mb-6 border border-amber-400/30">
+          <AlertCircle size={40} className="text-amber-400" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Active Proposal Detected</h2>
+        <p className="text-slate-400 max-w-md">
+            {matched 
+                ? "You are already matched with a supervisor. You cannot submit new proposals at this stage." 
+                : "You already have a proposal pending in the pool. You must withdraw or complete your current proposal before submitting a new one."}
+        </p>
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('switchTab', { detail: 'my' }))}
+          className="mt-8 px-8 py-3 bg-[#39b54a] text-white rounded-xl hover:bg-[#2e9c3e] transition-all font-bold shadow-lg shadow-[#39b54a]/20"
+        >
+          Manage My Submissions
+        </button>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -54,10 +80,10 @@ const ProposalWizard: React.FC = () => {
         <h2 className="text-2xl font-bold mb-2">Proposal Submitted!</h2>
         <p className="text-slate-400 max-w-md">Your project idea has been anonymously broadcasted to the supervisor pool. We will notify you when interest is expressed.</p>
         <button 
-          onClick={() => setSuccess(false)}
+          onClick={() => window.location.reload()}
           className="mt-8 px-6 py-2 bg-secondary text-white rounded-xl hover:bg-white/10 transition-all font-medium"
         >
-          Submit Another
+          Return to Dashboard
         </button>
       </div>
     );

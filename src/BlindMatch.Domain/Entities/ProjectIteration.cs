@@ -25,6 +25,12 @@ public class ProjectIteration : BaseEntity
     
     public IterationStatus Status { get; set; }
     
+    // File Metadata
+    public string? FileName { get; set; }
+    public string? FileUrl { get; set; }
+    public string? FileType { get; set; }
+    public long? FileSize { get; set; }
+    
     // Navigation Property
     [JsonIgnore]
     public Match Match { get; set; } = null!;

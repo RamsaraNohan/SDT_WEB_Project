@@ -21,8 +21,10 @@ class NotificationService {
         if (this.isStarting) return;
         this.isStarting = true;
 
+        const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:5259' : 'https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net';
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl('https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/hubs/reveal', {
+            .withUrl(`${baseUrl}/hubs/reveal`, {
+
                 accessTokenFactory: () => {
                     return useAuthStore.getState().token || '';
                 }

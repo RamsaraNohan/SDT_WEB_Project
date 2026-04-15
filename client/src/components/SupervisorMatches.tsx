@@ -7,6 +7,8 @@ interface SupervisorMatch {
   proposalId: string;
   title: string;
   state: string; // 'Interested', 'Confirmed'
+  studentName?: string;
+  studentCode?: string;
 }
 
 const SupervisorMatches: React.FC = () => {
@@ -34,8 +36,9 @@ const SupervisorMatches: React.FC = () => {
     setConfirming(matchId);
     try {
       await api.post('/matches/confirm', { proposalId });
-      // Update local state
-      setMatches(prev => prev.map(m => m.id === matchId ? { ...m, state: 'Confirmed' } : m));
+      // Re-fetch to get revealed identity and updated state from server
+      const response = await api.get('/matches/my');
+      setMatches(response.data.sort((a: any, b: any) => a.state.localeCompare(b.state)));
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to confirm match');
     } finally {
@@ -79,9 +82,22 @@ const SupervisorMatches: React.FC = () => {
                 </span>
               </div>
               <h3 className="text-lg font-bold">{match.title}</h3>
+              {match.state === 'Confirmed' && (
+                <div className="mt-3 flex items-center gap-4 text-sm">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Researcher</span>
+                    <span className="text-white font-bold">{match.studentName || 'John Doe (Mock)'}</span>
+                  </div>
+                  <div className="w-[1px] h-8 bg-white/5"></div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Project ID</span>
+                    <span className="text-[#39b54a] font-bold">{match.studentCode || 'ABC-PRJ'}</span>
+                  </div>
+                </div>
+              )}
             </div>
-            
-            <div>
+
+            <div className="flex items-center gap-3">
               {match.state === 'Interested' && (
                 <button 
                   onClick={() => handleConfirm(match.id, match.proposalId)}
@@ -93,8 +109,13 @@ const SupervisorMatches: React.FC = () => {
                 </button>
               )}
               {match.state === 'Confirmed' && (
-                <div className="flex items-center gap-2 text-primary font-bold px-4 py-2 border border-primary/20 rounded-xl bg-primary/10">
-                  <CheckCircle size={20} /> Active Supervision
+                <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => window.dispatchEvent(new CustomEvent('switchTab', { detail: { id: 'academic', matchId: match.id } }))}
+                        className="px-6 py-3 bg-[#39b54a] text-white font-bold rounded-xl hover:bg-[#2e9c3e] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#39b54a]/20 whitespace-nowrap"
+                    >
+                        Manage Academic Hub
+                    </button>
                 </div>
               )}
             </div>

@@ -42,6 +42,7 @@ public class AcademicController : ControllerBase
         return Ok(meeting);
     }
 
+
     [HttpGet("meetings/{matchId}")]
     public async Task<IActionResult> GetMeetings(Guid matchId)
     {
@@ -71,6 +72,41 @@ public class AcademicController : ControllerBase
         return Ok(new { id });
     }
 
+    public class UploadIterationRequest
+    {
+        public Guid MatchId { get; set; }
+        public IFormFile File { get; set; } = null!;
+    }
+
+    [HttpPost("iterations/upload")]
+    [RequestSizeLimit(52428800)] // 50MB
+    public async Task<IActionResult> UploadIteration([FromForm] UploadIterationRequest request)
+    {
+        if (request.File == null || request.File.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        var command = new UploadIterationCommand
+        {
+            MatchId = request.MatchId,
+            FileName = request.File.FileName,
+            ContentType = request.File.ContentType,
+            FileSize = request.File.Length,
+            FileStream = request.File.OpenReadStream()
+        };
+
+        try
+        {
+            var id = await _mediator.Send(command);
+            return Ok(new { id });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+
+
     [Authorize(Roles = "Supervisor,Admin")]
     [HttpPost("iterations/review")]
     public async Task<IActionResult> ReviewIteration([FromBody] ReviewIterationCommand command)
@@ -80,6 +116,16 @@ public class AcademicController : ControllerBase
     }
 
     // --- FINAL SCORING ---
+
+    [HttpGet("score/{matchId}")]
+    public async Task<IActionResult> GetFinalScore(Guid matchId)
+    {
+        var score = await _context.ProjectScores
+            .FirstOrDefaultAsync(s => s.MatchId == matchId);
+        
+        if (score == null) return NotFound("Score not published yet.");
+        return Ok(score);
+    }
 
     [Authorize(Roles = "Supervisor,Admin")]
     [HttpPost("score")]

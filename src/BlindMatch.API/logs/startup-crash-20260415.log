@@ -50,3 +50,138 @@ Microsoft.Data.SqlClient.SqlException (0x80131904): There is already an object n
    at Program.<>c__DisplayClass0_0.<<<Main>$>b__10>d.MoveNext() in C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.API\Program.cs:line 234
 ClientConnectionId:1123acc2-1846-47c3-aabc-17df5bb8c614
 Error Number:2714,State:6,Class:16
+2026-04-15 21:59:15.432 +05:30 [INF] Start installing Hangfire SQL objects...
+2026-04-15 21:59:16.539 +05:30 [INF] Hangfire SQL objects installed.
+2026-04-15 21:59:16.678 +05:30 [INF] 🚀 STARTUP STAGE 1: Applying Database Migrations...
+2026-04-15 21:59:17.046 +05:30 [WRN] Entity 'Proposal' has a global query filter defined and is the required end of a relationship with the entity 'Match'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.046 +05:30 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'RefreshToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.046 +05:30 [WRN] Entity 'ResearchArea' has a global query filter defined and is the required end of a relationship with the entity 'SupervisorExpertise'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.081 +05:30 [WRN] No store type was specified for the decimal property 'AssignedMarks' on entity type 'ProjectIteration'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-04-15 21:59:17.242 +05:30 [WRN] Entity 'Proposal' has a global query filter defined and is the required end of a relationship with the entity 'Match'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.242 +05:30 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'RefreshToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.242 +05:30 [WRN] Entity 'ResearchArea' has a global query filter defined and is the required end of a relationship with the entity 'SupervisorExpertise'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 21:59:17.246 +05:30 [WRN] No store type was specified for the decimal property 'AssignedMarks' on entity type 'ProjectIteration'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-04-15 21:59:17.277 +05:30 [ERR] ❌ Startup Migration/Seeding Failed
+System.InvalidOperationException: An error was generated for warning 'Microsoft.EntityFrameworkCore.Migrations.PendingModelChangesWarning': The model for context 'ApplicationDbContext' has pending changes. Add a new migration before updating the database. See https://aka.ms/efcore-docs-pending-changes. This exception can be suppressed or logged by passing event ID 'RelationalEventId.PendingModelChangesWarning' to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext'.
+   at Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`1.Log[TLoggerCategory](IDiagnosticsLogger`1 logger, TParam arg)
+   at Microsoft.EntityFrameworkCore.Diagnostics.RelationalLoggerExtensions.PendingModelChangesWarning(IDiagnosticsLogger`1 diagnostics, Type contextType)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.ValidateMigrations(Boolean useTransaction, String targetMigration)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in C:\Users\ramsa\Documents\SDT_WEB_Project\src\BlindMatch.API\Program.cs:line 255
+2026-04-15 21:59:17.346 +05:30 [INF] Starting Hangfire Server using job storage: 'SQL Server: (localdb)\mssqllocaldb@BlindMatchPAS_DB'
+2026-04-15 21:59:17.346 +05:30 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2026-04-15 21:59:17.347 +05:30 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-04-15 21:59:17.404 +05:30 [INF] Server desktop-i9qfuhf:29724:332ef6f8 successfully announced in 50.8833 ms
+2026-04-15 21:59:17.405 +05:30 [INF] Server desktop-i9qfuhf:29724:332ef6f8 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-04-15 21:59:17.409 +05:30 [INF] Server desktop-i9qfuhf:29724:332ef6f8 all the dispatchers started
+2026-04-15 21:59:17.410 +05:30 [INF] 1 servers were removed due to timeout
+2026-04-15 22:13:37.332 +05:30 [INF] Start installing Hangfire SQL objects...
+2026-04-15 22:13:37.705 +05:30 [INF] Hangfire SQL objects installed.
+2026-04-15 22:13:37.823 +05:30 [INF] 🚀 STARTUP STAGE 1: Applying Database Migrations...
+2026-04-15 22:13:38.131 +05:30 [WRN] Entity 'Proposal' has a global query filter defined and is the required end of a relationship with the entity 'Match'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:13:38.131 +05:30 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'RefreshToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:13:38.131 +05:30 [WRN] Entity 'ResearchArea' has a global query filter defined and is the required end of a relationship with the entity 'SupervisorExpertise'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:13:38.168 +05:30 [WRN] No store type was specified for the decimal property 'AssignedMarks' on entity type 'ProjectIteration'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-04-15 22:13:38.375 +05:30 [INF] 🚀 STARTUP STAGE 2: Starting Database Seeding...
+2026-04-15 22:13:39.862 +05:30 [INF] 🚀 STARTUP STAGE 3: System Fully Synchronized.
+2026-04-15 22:13:39.907 +05:30 [INF] Starting Hangfire Server using job storage: 'SQL Server: (localdb)\mssqllocaldb@BlindMatchPAS_DB'
+2026-04-15 22:13:39.907 +05:30 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2026-04-15 22:13:39.907 +05:30 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-04-15 22:13:39.963 +05:30 [INF] Server desktop-i9qfuhf:14396:90191948 successfully announced in 49.4856 ms
+2026-04-15 22:13:39.965 +05:30 [INF] Server desktop-i9qfuhf:14396:90191948 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-04-15 22:13:39.970 +05:30 [INF] Server desktop-i9qfuhf:14396:90191948 all the dispatchers started
+2026-04-15 22:18:44.122 +05:30 [WRN] Failed to determine the https port for redirect.
+2026-04-15 22:18:46.558 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-04-15 22:24:39.917 +05:30 [ERR] An unhandled exception has occurred while executing the request.
+Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorException: Failed to generate Operation for action - BlindMatch.API.Controllers.AcademicController.UploadIteration (BlindMatch.API). See inner exception
+ ---> Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorException: Error reading parameter(s) for action BlindMatch.API.Controllers.AcademicController.UploadIteration (BlindMatch.API) as [FromForm] attribute used with IFormFile. Please refer to https://github.com/domaindrivendev/Swashbuckle.AspNetCore/tree/master/docs/configure-and-customize-swaggergen.md#handle-forms-and-file-uploads for more information
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateParametersAsync(ApiDescription apiDescription, SchemaRepository schemaRepository, OpenApiDocument document, Func`4 parameterGenerator)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateParametersAsync(ApiDescription apiDescription, SchemaRepository schemaRepository, OpenApiDocument document)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository, Func`4 parametersGenerator, Func`4 bodyGenerator, Func`3 applyFilters)
+   --- End of inner exception stack trace ---
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository, Func`4 parametersGenerator, Func`4 bodyGenerator, Func`3 applyFilters)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository, Func`4 operationsGenerator)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GetSwaggerAsync(String documentName, String host, String basePath)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-04-15 22:24:47.367 +05:30 [ERR] An unhandled exception has occurred while executing the request.
+Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorException: Failed to generate Operation for action - BlindMatch.API.Controllers.AcademicController.UploadIteration (BlindMatch.API). See inner exception
+ ---> Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorException: Error reading parameter(s) for action BlindMatch.API.Controllers.AcademicController.UploadIteration (BlindMatch.API) as [FromForm] attribute used with IFormFile. Please refer to https://github.com/domaindrivendev/Swashbuckle.AspNetCore/tree/master/docs/configure-and-customize-swaggergen.md#handle-forms-and-file-uploads for more information
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateParametersAsync(ApiDescription apiDescription, SchemaRepository schemaRepository, OpenApiDocument document, Func`4 parameterGenerator)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateParametersAsync(ApiDescription apiDescription, SchemaRepository schemaRepository, OpenApiDocument document)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository, Func`4 parametersGenerator, Func`4 bodyGenerator, Func`3 applyFilters)
+   --- End of inner exception stack trace ---
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository, Func`4 parametersGenerator, Func`4 bodyGenerator, Func`3 applyFilters)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationAsync(OpenApiDocument document, ApiDescription apiDescription, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository, Func`4 operationsGenerator)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GetSwaggerAsync(String documentName, String host, String basePath)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-04-15 22:44:36.756 +05:30 [INF] Start installing Hangfire SQL objects...
+2026-04-15 22:44:37.049 +05:30 [INF] Hangfire SQL objects installed.
+2026-04-15 22:44:37.166 +05:30 [INF] 🚀 STARTUP STAGE 1: Applying Database Migrations...
+2026-04-15 22:44:37.460 +05:30 [WRN] Entity 'Proposal' has a global query filter defined and is the required end of a relationship with the entity 'Match'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:44:37.460 +05:30 [WRN] Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'RefreshToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:44:37.460 +05:30 [WRN] Entity 'ResearchArea' has a global query filter defined and is the required end of a relationship with the entity 'SupervisorExpertise'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+2026-04-15 22:44:37.493 +05:30 [WRN] No store type was specified for the decimal property 'AssignedMarks' on entity type 'ProjectIteration'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-04-15 22:44:37.710 +05:30 [INF] 🚀 STARTUP STAGE 2: Starting Database Seeding...
+2026-04-15 22:44:37.981 +05:30 [INF] 🚀 STARTUP STAGE 3: System Fully Synchronized.
+2026-04-15 22:44:38.042 +05:30 [INF] Starting Hangfire Server using job storage: 'SQL Server: (localdb)\mssqllocaldb@BlindMatchPAS_DB'
+2026-04-15 22:44:38.042 +05:30 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
+2026-04-15 22:44:38.042 +05:30 [INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-04-15 22:44:38.090 +05:30 [INF] Server desktop-i9qfuhf:20392:0e44e813 successfully announced in 41.0254 ms
+2026-04-15 22:44:38.091 +05:30 [INF] Server desktop-i9qfuhf:20392:0e44e813 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-04-15 22:44:38.095 +05:30 [INF] Server desktop-i9qfuhf:20392:0e44e813 all the dispatchers started
+2026-04-15 22:46:20.332 +05:30 [WRN] Failed to determine the https port for redirect.
+2026-04-15 22:46:20.954 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-04-15 22:49:38.107 +05:30 [INF] 1 servers were removed due to timeout
+2026-04-15 22:57:49.542 +05:30 [ERR] An unhandled exception has occurred while executing the request.
+Swashbuckle.AspNetCore.SwaggerGen.SwaggerGeneratorException: Conflicting method/path combination "GET " for actions - HTTP: GET /, HTTP: GET /. Actions require a unique method/path combination for Swagger/OpenAPI 2.0 and 3.0. Use ConflictingActionsResolver as a workaround or provide your own implementation of PathGroupSelector.
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.PrepareGenerateOperation(IGrouping`2 group)
+   at System.Linq.Enumerable.IteratorSelectIterator`2.MoveNext()
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GenerateOperationsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository, Func`4 operationsGenerator)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GeneratePathsAsync(OpenApiDocument document, IEnumerable`1 apiDescriptions, SchemaRepository schemaRepository)
+   at Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator.GetSwaggerAsync(String documentName, String host, String basePath)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-04-15 22:58:29.284 +05:30 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.AspNetCore.Routing.Matching.AmbiguousMatchException: The request matched multiple endpoints. Matches: 
+
+HTTP: GET /
+HTTP: GET /
+   at Microsoft.AspNetCore.Routing.Matching.DefaultEndpointSelector.ReportAmbiguity(Span`1 candidateState)
+   at Microsoft.AspNetCore.Routing.Matching.DefaultEndpointSelector.ProcessFinalCandidates(HttpContext httpContext, Span`1 candidateState)
+   at Microsoft.AspNetCore.Routing.Matching.DefaultEndpointSelector.Select(HttpContext httpContext, Span`1 candidateState)
+   at Microsoft.AspNetCore.Routing.Matching.DfaMatcher.MatchAsync(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-04-15 23:14:48.406 +05:30 [INF] Submitting proposal for student "cd82c50f-9f61-4bec-979d-08de9b0e251e"
+2026-04-15 23:16:05.805 +05:30 [INF] Supervisor "46754b97-f7c6-4b94-9798-08de9b0e251e" expressing interest in proposal "93a24fe9-d2f6-499c-9047-be46461e7777"
+2026-04-15 23:16:36.652 +05:30 [INF] Supervisor "46754b97-f7c6-4b94-9798-08de9b0e251e" confirming match for proposal "93a24fe9-d2f6-499c-9047-be46461e7777"
+2026-04-15 23:16:36.766 +05:30 [WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+2026-04-15 23:16:36.864 +05:30 [WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+2026-04-15 23:19:07.927 +05:30 [INF] Uploading iteration for match "f8d83083-d31c-4fcd-a823-748eae232d27", file 88_Event_Management_System_251031_155923.pdf
+2026-04-15 23:19:07.931 +05:30 [INF] Uploading file to wwwroot\uploads\f310ed4b-5ba6-4359-9115-d0a7a65ea704.pdf
+2026-04-15 23:19:35.736 +05:30 [INF] Uploading iteration for match "f8d83083-d31c-4fcd-a823-748eae232d27", file 372-3721900_transparent-green-design-png-nsbm-green-university-town.png
+2026-04-15 23:19:35.737 +05:30 [INF] Uploading file to wwwroot\uploads\2bee5bc5-e7dd-46f8-8e17-dd768d36f2a0.png

@@ -9,5 +9,6 @@ public enum ProposalStatus
     Active,
     Submitted,
     Completed,
-    Rejected
+    Rejected,
+    Deleted
 }

@@ -1,12 +1,20 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
+const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+        return window.location.hostname === 'localhost' ? 'http://localhost:5259/api' : 'https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/api';
+    }
+    return 'http://localhost:5259/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://blindmatch-ekf5hng6echxdbar.southeastasia-01.azurewebsites.net/api',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;

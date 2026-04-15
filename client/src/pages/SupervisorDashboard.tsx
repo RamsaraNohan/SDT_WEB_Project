@@ -20,7 +20,7 @@ const SupervisorDashboard: React.FC = () => {
   const showToast = useToastStore(state => state.showToast);
   const [activeTab, setActiveTab] = useState('overview');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [confirmedMatchId, setConfirmedMatchId] = useState<string | null>(null);
+  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [statsData, setStatsData] = useState({
     activeMatches: 0,
     expressedInterests: 0,
@@ -40,7 +40,7 @@ const SupervisorDashboard: React.FC = () => {
         const proposals = proposalRes.data || [];
 
         const confirmed = matches.find((m: any) => m.state === 'Confirmed');
-        if (confirmed) setConfirmedMatchId(confirmed.id);
+        if (confirmed && !selectedMatchId) setSelectedMatchId(confirmed.id);
 
         setStatsData({
           activeMatches: matches.filter((m: any) => m.state === 'Confirmed').length,
@@ -52,7 +52,20 @@ const SupervisorDashboard: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+
+    // Listen for internal tab switches
+    const handleSwitch = (e: any) => {
+        if (typeof e.detail === 'string') {
+            setActiveTab(e.detail);
+        } else if (e.detail?.id) {
+            setActiveTab(e.detail.id);
+            if (e.detail.matchId) setSelectedMatchId(e.detail.matchId);
+        }
+    };
+
+    window.addEventListener('switchTab', handleSwitch);
+    return () => window.removeEventListener('switchTab', handleSwitch);
+  }, [selectedMatchId]);
 
   const handleLogout = () => {
     notificationService.stop();
@@ -200,9 +213,10 @@ const SupervisorDashboard: React.FC = () => {
             {activeTab === 'matches' && <div className="animate-reveal-fade"><SupervisorMatches /></div>}
             {activeTab === 'academic' && (
                 <div className="animate-reveal-fade">
-                {confirmedMatchId ? (
-                    <AcademicPortal matchId={confirmedMatchId} role="Supervisor" />
+                {selectedMatchId ? (
+                    <AcademicPortal matchId={selectedMatchId} role="Supervisor" />
                 ) : (
+
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                     <BookOpen size={48} className="text-slate-700 mb-4" />
                     <h3 className="text-xl font-bold text-slate-300">No Confirmed Matches</h3>

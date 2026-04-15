@@ -22,6 +22,14 @@ public class MatchingService : IMatchingService
         if (proposal == null || (proposal.Status != ProposalStatus.Pending && proposal.Status != ProposalStatus.UnderReview))
             return;
 
+        // 🔥 CONSTRAINT: No interest if student already matched elsewhere
+        var studentId = proposal.StudentId;
+        var studentAlreadyMatched = await _context.Proposals
+            .AnyAsync(p => p.StudentId == studentId && p.Status == ProposalStatus.Matched);
+        
+        if (studentAlreadyMatched) return;
+
+
         var existingMatch = await _context.Matches
             .FirstOrDefaultAsync(m => m.SupervisorId == supervisorId && m.ProposalId == proposalId);
 
@@ -75,15 +83,28 @@ public class MatchingService : IMatchingService
             match.ConfirmedAt = DateTime.UtcNow;
             proposal.Status = ProposalStatus.Matched;
 
-            // 2. Withdraw all other interests for this PROPOSAL
-            var otherProposalInterests = await _context.Matches
-                .Where(m => m.ProposalId == proposalId && m.Id != match.Id && m.State == MatchState.Interested)
+            // 2. Withdraw all other interests for this STUDENT (across all their proposals if any)
+            var studentId = proposal.StudentId;
+            var allStudentInterests = await _context.Matches
+                .Include(m => m.Proposal)
+                .Where(m => m.Proposal.StudentId == studentId && m.Id != match.Id && m.State == MatchState.Interested)
                 .ToListAsync();
 
-            foreach (var other in otherProposalInterests)
+            foreach (var other in allStudentInterests)
             {
                 other.State = MatchState.Withdrawn;
             }
+            
+            // Also mark other proposals by this student as Archived if they exist
+            var otherStudentProposals = await _context.Proposals
+                .Where(p => p.StudentId == studentId && p.Id != proposalId && p.Status != ProposalStatus.Matched)
+                .ToListAsync();
+            
+            foreach (var otherProp in otherStudentProposals)
+            {
+                otherProp.Status = ProposalStatus.Deleted; // Or add an 'Archived' status
+            }
+
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();

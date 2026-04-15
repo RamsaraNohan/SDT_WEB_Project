@@ -158,8 +158,11 @@ const StudentProposals: React.FC = () => {
                         </button>
                     </>
                 ) : proposal.status === 3 ? (
-                  <button className="px-6 py-3 bg-[#39b54a] text-white font-bold rounded-xl flex items-center gap-2 hover:bg-[#2e9c3e] transition-all shadow-lg shadow-[#39b54a]/20">
-                    <CheckCircle2 size={18} /> View Reveal Details
+                  <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('switchTab', { detail: 'academic' }))}
+                    className="px-6 py-3 bg-[#39b54a] text-white font-bold rounded-xl flex items-center gap-2 hover:bg-[#2e9c3e] transition-all shadow-lg shadow-[#39b54a]/20"
+                  >
+                    <CheckCircle2 size={18} /> Manage Academic Hub
                   </button>
                 ) : (
                   <button className="px-6 py-3 bg-white/5 text-slate-400 rounded-xl flex items-center gap-2 border border-white/5 cursor-not-allowed">

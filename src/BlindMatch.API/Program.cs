@@ -158,13 +158,14 @@ try
     builder.Services.AddScoped<IIdentityService, IdentityService>();
     builder.Services.AddScoped<INotificationService, NotificationService>();
     builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+    builder.Services.AddScoped<IBlobStorageService, LocalBlobStorageService>();
 
     // 🔥 3. PRODUCTION CORS POLICY (Industry Standard for SignalR)
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowFrontend", policy =>
         {
-            policy.WithOrigins("https://lemon-wave-05930bd00.7.azurestaticapps.net")
+            policy.WithOrigins("https://lemon-wave-05930bd00.7.azurestaticapps.net", "http://localhost:5174", "http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials(); // ⚠️ REQUIRED FOR SIGNALR
@@ -177,16 +178,11 @@ try
 
     var app = builder.Build();
 
-    // 🚀 THE INSTANT TRUTH-REPORTER (Prevents 500.37 Timeout)
+    // 🔥 1. PRE-FLIGHT CONFIGURATION GUARD
     bool hasCredentials = connectionString.Contains("User ID") || connectionString.Contains("Password");
     if (!hasCredentials || connectionString.Contains("NO_AZURE_CONNECTION_STRING_FOUND"))
     {
-        app.MapGet("/", () => Results.Problem(
-            detail: "Your connection string in the Azure Portal is missing or invalid. Please check the Configuration/Connection Strings section for 'DefaultConnection'.",
-            title: "Azure Configuration Warning",
-            statusCode: 500));
-        
-        // We still allow the app to run so /api/auth/diagnostic can be hit
+        Log.Warning("⚠️ Azure Configuration Warning: Connection string may be invalid.");
     }
 
     // Configure the HTTP request pipeline.
@@ -198,7 +194,7 @@ try
 
     app.UseHttpsRedirection();
 
-    // 🔥 4. ENABLE ROUTING & CORS (Correct Standard Order)
+    // 🚀 4. ENABLE ROUTING & CORS (Correct Standard Order)
     app.UseRouting();
     app.UseCors("AllowFrontend");
 
@@ -208,8 +204,11 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // 🚀 6. ROOT ROUTE (Enhanced Health Check)
-    app.MapGet("/", async (IApplicationDbContext context) => 
+    // 🚀 6. ROOT ROUTE (Simple Health Check for Proxy)
+    app.MapGet("/", () => Results.Ok(new { Status = "Healthy", Service = "NSBM Blind-Match API" }));
+
+    // 🚀 7. DIAGNOSTIC ROUTE (Detailed)
+    app.MapGet("/api/status", async (IApplicationDbContext context) => 
     {
         var tables = new List<string>();
         try {
@@ -225,13 +224,14 @@ try
         { 
             Status = "Healthy", 
             System = "NSBM Project Tracker API", 
-            Environment = "Production",
-            Version = "2.1.0",
-            MigrationStatus = tables.Contains("ProjectIterations") ? "Fully Synchronized" : "Pending Iteration Table",
+            Environment = app.Environment.EnvironmentName,
+            Version = "2.1.2",
+            MigrationStatus = tables.Contains("ProjectIterations") ? "Fully Synchronized" : "Pending Migration",
             DeployedTables = tables,
             Timestamp = DateTime.UtcNow
         });
     });
+
 
     // 🚀 7. HEALTH CHECK ENDPOINT (For Docker)
     app.MapHealthChecks("/health");

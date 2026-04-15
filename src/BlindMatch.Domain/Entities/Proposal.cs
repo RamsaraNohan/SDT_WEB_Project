@@ -1,5 +1,6 @@
 using BlindMatch.Domain.Common;
 using BlindMatch.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace BlindMatch.Domain.Entities;
 
@@ -15,7 +16,10 @@ public class Proposal : BaseEntity
     public string? PdfBlobUrl { get; set; }
     public string? RejectionReason { get; set; }
 
+    [JsonIgnore]
     public User Student { get; set; } = null!;
+    [JsonIgnore]
     public ResearchArea ResearchArea { get; set; } = null!;
+    [JsonIgnore]
     public FinalSubmission? FinalSubmission { get; set; }
 }
