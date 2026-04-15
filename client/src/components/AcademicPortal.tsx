@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Award, Send, Plus, FileText, CheckCircle2, AlertCircle, MessageSquare, List, Play, Loader2, Star, History } from 'lucide-react';
+import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History } from 'lucide-react';
 import api from '../api/axios';
 import { useToastStore } from '../store/useToastStore';
 
