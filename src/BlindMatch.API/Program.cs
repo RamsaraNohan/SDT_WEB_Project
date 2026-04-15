@@ -171,7 +171,7 @@ try
         });
     });
 
-    builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
+    builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
@@ -208,15 +208,30 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // 🚀 6. ROOT ROUTE
-    app.MapGet("/", () => Results.Ok(new 
-    { 
-        Status = "Healthy", 
-        System = "NSBM Project Tracker API", 
-        Environment = "Production",
-        Version = "2.0.0",
-        Timestamp = DateTime.UtcNow
-    }));
+    // 🚀 6. ROOT ROUTE (Enhanced Health Check)
+    app.MapGet("/", async (IApplicationDbContext context) => 
+    {
+        var tables = new List<string>();
+        try {
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open) await conn.OpenAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT name FROM sys.tables WHERE schema_id = SCHEMA_ID('dbo')";
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) tables.Add(reader.GetString(0));
+        } catch {}
+
+        return Results.Ok(new 
+        { 
+            Status = "Healthy", 
+            System = "NSBM Project Tracker API", 
+            Environment = "Production",
+            Version = "2.1.0",
+            MigrationStatus = tables.Contains("ProjectIterations") ? "Fully Synchronized" : "Pending Iteration Table",
+            DeployedTables = tables,
+            Timestamp = DateTime.UtcNow
+        });
+    });
 
     // 🚀 7. HEALTH CHECK ENDPOINT (For Docker)
     app.MapHealthChecks("/health");

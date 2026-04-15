@@ -1,5 +1,7 @@
 using BlindMatch.Domain.Common;
 
+using System.Text.Json.Serialization;
+
 namespace BlindMatch.Domain.Entities;
 
 public class SupervisionMeeting : BaseEntity
@@ -10,5 +12,6 @@ public class SupervisionMeeting : BaseEntity
     public string Topics { get; set; } = string.Empty;
     public string? ActionItems { get; set; }
 
+    [JsonIgnore]
     public Match Match { get; set; } = null!;
 }

@@ -1,5 +1,6 @@
 using BlindMatch.Domain.Common;
 using BlindMatch.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace BlindMatch.Domain.Entities;
 
@@ -25,5 +26,6 @@ public class ProjectIteration : BaseEntity
     public IterationStatus Status { get; set; }
     
     // Navigation Property
+    [JsonIgnore]
     public Match Match { get; set; } = null!;
 }
