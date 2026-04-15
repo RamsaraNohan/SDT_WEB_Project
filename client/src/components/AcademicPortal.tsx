@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History, AlertCircle, Download } from 'lucide-react';
+import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History, AlertCircle } from 'lucide-react';
 import api from '../api/axios';
 import { useToastStore } from '../store/useToastStore';
 
@@ -41,7 +41,6 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const [showFinalScoreForm, setShowFinalScoreForm] = useState(false);
     
     const [newMeeting, setNewMeeting] = useState({ date: '', summary: '' });
-    const [newIteration, setNewIteration] = useState({ content: '' });
     const [reviewData, setReviewData] = useState({ feedback: '', marks: 0, status: 1 });
     const [finalScoreData, setFinalScoreData] = useState({ score: 0, feedback: '' });
     
