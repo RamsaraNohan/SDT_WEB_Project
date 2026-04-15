@@ -2,6 +2,7 @@ using BlindMatch.Application.Interfaces;
 using BlindMatch.Domain.Entities;
 using BlindMatch.Domain.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlindMatch.Application.Academic.Commands;
 

@@ -15,10 +15,7 @@ public class ProjectScoreConfiguration : IEntityTypeConfiguration<ProjectScore>
             .HasForeignKey<ProjectScore>(ps => ps.MatchId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Property(ps => ps.ResearchQuality).IsRequired();
-        builder.Property(ps => ps.TechnicalImpl).IsRequired();
-        builder.Property(ps => ps.ReportClarity).IsRequired();
-        builder.Property(ps => ps.Presentation).IsRequired();
+        builder.Property(ps => ps.OverallScore).IsRequired();
 
         // UNIQUE constraint
         builder.HasIndex(ps => ps.MatchId).IsUnique();
