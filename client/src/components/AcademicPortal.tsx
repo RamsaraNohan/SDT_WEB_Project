@@ -169,7 +169,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                     <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                         <Award className="text-[#39b54a]" /> Academic Workspace
                     </h2>
-                    <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system.</p>
+                    <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system. <span className="text-[10px] opacity-30">v1.0-Stable</span></p>
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full lg:w-auto mt-4 lg:mt-0">
                     {role === 'Supervisor' && (
