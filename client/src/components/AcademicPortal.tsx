@@ -48,6 +48,8 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const [actionLoading, setActionLoading] = useState(false);
     const showToast = useToastStore(state => state.showToast);
 
+    const fetchData = async () => {
+        if (!matchId) return;
         console.log(`[AcademicHub] Fetching data for Match: ${matchId}`);
         const v = Date.now();
         try {
