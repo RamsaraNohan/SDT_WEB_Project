@@ -44,6 +44,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const [reviewData, setReviewData] = useState({ feedback: '', marks: 0, status: 1 });
     const [finalScoreData, setFinalScoreData] = useState({ score: 0, feedback: '' });
     
+    const isGraded = !!score;
     const [actionLoading, setActionLoading] = useState(false);
     const showToast = useToastStore(state => state.showToast);
 
@@ -189,7 +190,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                         </button>
                     )}
 
-                    {role === 'Student' && matchStatus === 'Confirmed' && !isGraded && (
+                    {role === 'Student' && !isGraded && (
                         <button
                             onClick={() => setShowIterationForm(true)}
                             className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-[#39b54a] text-white rounded-xl hover:bg-[#39b54a]/90 transition-all font-black shadow-lg shadow-[#39b54a]/20"
