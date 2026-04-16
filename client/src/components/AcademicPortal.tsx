@@ -162,30 +162,38 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
 
     return (
         <div className="space-y-8 animate-reveal-fade">
-            <header className="flex justify-between items-center bg-[#0e1628] p-8 rounded-3xl border border-white/5">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
                 <div>
-                    <h2 className="text-2xl font-bold flex items-center gap-3">
+                    <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                         <Award className="text-[#39b54a]" /> Academic Workspace
                     </h2>
-                    <p className="text-slate-400 mt-1">Iterative submission tracking and grading system.</p>
+                    <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system.</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3 w-full md:w-auto mt-4 md:mt-0">
                     {role === 'Supervisor' && (
                          <button 
                             onClick={() => setShowMeetingForm(true)}
-                            className="flex items-center gap-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-6 py-3 rounded-xl font-bold hover:bg-blue-500/20 transition-all"
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-400 border border-blue-400/20 rounded-xl hover:bg-blue-500/20 transition-all font-bold text-xs"
+                         >
+                            <Calendar size={14} /> Log Meeting
+                         </button>
+                    )}
+                    
+                    {role === 'Supervisor' && !isGraded && (
+                        <button 
+                            onClick={() => setShowFinalScoreForm(true)}
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-xl hover:bg-amber-500/20 transition-all font-bold text-xs"
                         >
-                            <Calendar size={20} />
-                            Log Meeting
+                            <Star size={14} /> Finalize Grading
                         </button>
                     )}
-                    {role === 'Student' && (
-                         <button 
+
+                    {role === 'Student' && matchStatus === 'Confirmed' && !isGraded && (
+                        <button
                             onClick={() => setShowIterationForm(true)}
-                            className="flex items-center gap-2 bg-[#39b54a] text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-[#39b54a]/20"
+                            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-[#39b54a] text-white rounded-xl hover:bg-[#39b54a]/90 transition-all font-black shadow-lg shadow-[#39b54a]/20"
                         >
-                            <Plus size={20} />
-                            Submit Work
+                            <Plus size={18} /> Submit Work
                         </button>
                     )}
                 </div>

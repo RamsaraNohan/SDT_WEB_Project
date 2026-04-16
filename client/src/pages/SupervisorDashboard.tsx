@@ -154,9 +154,9 @@ const SupervisorDashboard: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto bg-[#0a0f1c] pb-8">
-        <header className="flex justify-between items-center px-10 py-8">
+        <header className="flex justify-between items-center px-4 md:px-10 py-4 md:py-8">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">Welcome back, {user?.fullName || 'Faculty'}</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-white mb-1">Welcome back, {user?.fullName || 'Faculty'}</h1>
             <p className="text-sm text-slate-400">Portal Status: <span className="text-blue-400 font-medium">Session Active</span></p>
           </div>
           <div className="flex items-center gap-6">
@@ -175,7 +175,7 @@ const SupervisorDashboard: React.FC = () => {
           </div>
         </header>
 
-        <div className="px-10">
+        <div className="px-4 md:px-10">
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <StatCard label="Active Supervisions" value={statsData.activeMatches.toString()} sub="Confirmed matches" />
@@ -184,7 +184,7 @@ const SupervisorDashboard: React.FC = () => {
             </div>
           )}
 
-          <div className="bg-[#0e1628] rounded-2xl p-8 border border-white/5 min-h-[500px]">
+          <div className="bg-[#0e1628] rounded-2xl p-4 md:p-8 border border-white/5 min-h-[500px]">
              {activeTab === 'overview' && (
                 <div className="space-y-6">
                     <h3 className="text-xl font-bold mb-2 flex items-center gap-2">

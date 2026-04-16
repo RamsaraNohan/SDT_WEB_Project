@@ -112,9 +112,9 @@ const StudentDashboard: React.FC = () => {
 
             {/* Main Content */}
             <main className="flex-1 overflow-auto bg-[#0a0f1c] pb-8">
-                <header className="flex justify-between items-center px-10 py-8">
+                <header className="flex justify-between items-center px-4 md:px-10 py-4 md:py-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-white mb-1">Welcome back, {user?.fullName || 'User'}</h1>
+                        <h1 className="text-xl md:text-2xl font-bold text-white mb-1">Welcome back, {user?.fullName || 'User'}</h1>
                         <p className="text-sm text-slate-400">Portal Status: <span className="text-[#39b54a] font-medium">Session Active</span></p>
                     </div>
                     
@@ -134,7 +134,7 @@ const StudentDashboard: React.FC = () => {
                     </div>
                 </header>
 
-                <div className="px-10">
+                <div className="px-4 md:px-10">
                     {/* Overview Dashboard view matching original image */}
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -144,7 +144,7 @@ const StudentDashboard: React.FC = () => {
                         </div>
                     )}
 
-                    <div className="bg-[#0e1628] rounded-2xl p-8 border border-white/5 min-h-[500px]">
+                    <div className="bg-[#0e1628] rounded-2xl p-4 md:p-8 border border-white/5 min-h-[500px]">
                         {activeTab === 'overview' && (
                             <>
                                 <h3 className="text-xl font-bold mb-6 text-white">Upcoming Deadlines</h3>
