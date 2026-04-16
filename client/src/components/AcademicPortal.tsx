@@ -48,13 +48,13 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const [actionLoading, setActionLoading] = useState(false);
     const showToast = useToastStore(state => state.showToast);
 
-    const fetchData = async () => {
-        if (!matchId) return;
+        console.log(`[AcademicHub] Fetching data for Match: ${matchId}`);
+        const v = Date.now();
         try {
             const [mRes, iRes, sRes] = await Promise.all([
-                api.get(`/Academic/meetings/${matchId}`).catch(() => ({ data: [] })),
-                api.get(`/Academic/iterations/${matchId}`).catch(() => ({ data: [] })),
-                api.get(`/Academic/score/${matchId}`).catch(() => ({ data: null }))
+                api.get(`/Academic/meetings/${matchId}?v=${v}`).catch(() => ({ data: [] })),
+                api.get(`/Academic/iterations/${matchId}?v=${v}`).catch(() => ({ data: [] })),
+                api.get(`/Academic/score/${matchId}?v=${v}`).catch(() => ({ data: null }))
             ]);
             setMeetings(mRes.data);
             setIterations(iRes.data);
@@ -164,12 +164,12 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
 
     return (
         <div className="space-y-8 animate-reveal-fade">
-            <header className="flex flex-col items-stretch lg:flex-row lg:items-center justify-between bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
+            <header className="flex !flex-col items-stretch lg:!flex-row lg:items-center justify-between bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
                 <div className="w-full lg:w-auto">
                     <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                         <Award className="text-[#39b54a]" /> Academic Workspace
                     </h2>
-                    <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system. <span className="text-[10px] opacity-30">v1.0-Stable</span></p>
+                    <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system. <span className="text-[10px] opacity-30 text-[#39b54a]">v1.1-Stable</span></p>
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full lg:w-auto mt-4 lg:mt-0">
                     {role === 'Supervisor' && (
