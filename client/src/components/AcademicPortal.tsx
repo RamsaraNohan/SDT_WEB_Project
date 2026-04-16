@@ -163,7 +163,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     return (
         <div className="space-y-8 animate-reveal-fade">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
-                <div>
+                <div className="w-full md:w-auto">
                     <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                         <Award className="text-[#39b54a]" /> Academic Workspace
                     </h2>

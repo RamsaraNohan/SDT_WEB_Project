@@ -123,7 +123,7 @@ public class AcademicController : ControllerBase
         var score = await _context.ProjectScores
             .FirstOrDefaultAsync(s => s.MatchId == matchId);
         
-        if (score == null) return NotFound("Score not published yet.");
+        if (score == null) return Ok();
         return Ok(score);
     }
 
