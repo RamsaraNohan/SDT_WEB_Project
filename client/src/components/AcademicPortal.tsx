@@ -72,7 +72,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const handleLogMeeting = async () => {
         setActionLoading(true);
         try {
-            await api.post('/academic/meetings', {
+            await api.post('/Academic/meetings', {
                 matchId,
                 meetingDate: newMeeting.date,
                 topics: newMeeting.summary,
@@ -103,7 +103,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
         formData.append('File', file);
 
         try {
-            await api.post('/academic/iterations/upload', formData, {
+            await api.post('/Academic/iterations/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             showToast(`Version v${iterations.length + 1} uploaded successfully.`, "success");
@@ -121,7 +121,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
         if (!showReviewForm) return;
         setActionLoading(true);
         try {
-            await api.post('/academic/iterations/review', {
+            await api.post('/Academic/iterations/review', {
                 iterationId: showReviewForm.id,
                 feedback: reviewData.feedback,
                 marks: reviewData.marks,
@@ -140,7 +140,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const handleFinalScore = async () => {
         setActionLoading(true);
         try {
-            await api.post('/academic/score', {
+            await api.post('/Academic/score', {
                 matchId,
                 overallScore: finalScoreData.score,
                 supervisorFeedback: finalScoreData.feedback
@@ -163,14 +163,14 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
 
     return (
         <div className="space-y-8 animate-reveal-fade">
-            <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
-                <div className="w-full md:w-auto">
+            <header className="flex flex-col items-stretch lg:flex-row lg:items-center justify-between bg-[#0e1628] p-6 md:p-8 rounded-3xl border border-white/5 gap-6">
+                <div className="w-full lg:w-auto">
                     <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
                         <Award className="text-[#39b54a]" /> Academic Workspace
                     </h2>
                     <p className="text-slate-400 mt-1 text-sm md:text-base">Iterative submission tracking and grading system.</p>
                 </div>
-                <div className="flex flex-wrap gap-3 w-full md:w-auto mt-4 md:mt-0">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full lg:w-auto mt-4 lg:mt-0">
                     {role === 'Supervisor' && (
                          <button 
                             onClick={() => setShowMeetingForm(true)}
