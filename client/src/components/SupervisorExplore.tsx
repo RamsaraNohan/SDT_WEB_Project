@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Search, Info, Heart, Loader2, Sparkles, Code2 } from 'lucide-react';
@@ -129,3 +130,4 @@ const SupervisorExplore: React.FC = () => {
 };
 
 export default SupervisorExplore;
+

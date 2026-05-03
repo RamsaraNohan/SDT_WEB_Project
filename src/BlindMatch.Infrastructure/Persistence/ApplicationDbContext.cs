@@ -1,3 +1,4 @@
+#backendopen
 using BlindMatch.Application.Interfaces;
 using BlindMatch.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -90,3 +91,4 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
+#closeone
