@@ -6,6 +6,7 @@ import {
   LogOut, Users, Settings, Menu, X, Bell,
   Activity, LayoutDashboard, Tag, BookOpen
 } from 'lucide-react';
+
 import LeaderOverview from '../components/LeaderOverview';
 import api from '../api/axios';
 import { notificationService } from '../services/NotificationService';
@@ -23,6 +24,7 @@ const AdminDashboard: React.FC = () => {
     });
 
     useEffect(() => {
+      
         notificationService.start();
         const fetchData = async () => {
             try {
@@ -104,7 +106,7 @@ const AdminDashboard: React.FC = () => {
                 </div>
             </aside>
 
-            {/* Main Content */}
+            
             <main className="flex-1 overflow-auto bg-[#0a0f1c] pb-8">
                 <header className="flex justify-between items-center px-10 py-8">
                     <div>
@@ -129,7 +131,8 @@ const AdminDashboard: React.FC = () => {
                 </header>
 
                 <div className="px-10">
-                    {/* Overview Dashboard view matching original image */}
+
+                  
                     {activeTab === 'overview' && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                             <StatCard label="Total Proposals" value={statsData.totalProposals.toString()} sub="Submitted this cycle" />
@@ -229,6 +232,7 @@ const ResearchAreaManager: React.FC = () => {
   }, []);
 
   return (
+    
     <div className="space-y-6">
       <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Tag className="text-amber-500" size={20} /> Research Areas</h3>
       <div className="flex gap-3 mb-6">
@@ -250,10 +254,12 @@ const ResearchAreaManager: React.FC = () => {
       </div>
     </div>
   );
+
 };
 
 const StatCard = ({ label, value, sub }: { label: string; value: string; sub: string }) => {
   return (
+    
     <div className={`bg-[#0e1628] p-6 rounded-2xl border border-white/5 overflow-hidden`}>
       <p className="text-slate-500 text-sm font-medium">{label}</p>
       <h4 className="text-3xl font-bold mt-2 mb-1 text-white">{value}</h4>
