@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
+
 import { Calendar, Award, Plus, FileText, CheckCircle2, MessageSquare, Loader2, Star, History, AlertCircle } from 'lucide-react';
 import api from '../api/axios';
+
 import { useToastStore } from '../store/useToastStore';
 
 interface Meeting {
+    
     id: string;
     meetingDate: string;
     topics: string;
+    
 }
 
 interface Iteration {
+    
     id: string;
     iterationNumber: number;
     submissionContent: string;
@@ -17,9 +22,13 @@ interface Iteration {
     supervisorFeedback: string | null;
     reviewedAt: string | null;
     assignedMarks: number | null;
-    status: number; // 0: Pending, 1: Revision, 2: Approved
+    status: number; 
+    
+    // 0: Pending, 1: Revision, 2: Approved will show what is the status
+    
     fileName: string | null;
     fileUrl: string | null;
+    
 }
 
 interface ProjectScore {
@@ -34,15 +43,20 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
     const [score, setScore] = useState<ProjectScore | null>(null);
     const [loading, setLoading] = useState(true);
     
-    // Forms
+    // Forms 1
+    
     const [showMeetingForm, setShowMeetingForm] = useState(false);
     const [showIterationForm, setShowIterationForm] = useState(false);
     const [showReviewForm, setShowReviewForm] = useState<Iteration | null>(null);
     const [showFinalScoreForm, setShowFinalScoreForm] = useState(false);
+
+    // Forms 2
     
     const [newMeeting, setNewMeeting] = useState({ date: '', summary: '' });
     const [reviewData, setReviewData] = useState({ feedback: '', marks: 0, status: 1 });
     const [finalScoreData, setFinalScoreData] = useState({ score: 0, feedback: '' });
+
+    // Forms 3
     
     const isGraded = !!score;
     const [actionLoading, setActionLoading] = useState(false);
@@ -66,6 +80,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
         } finally {
             setLoading(false);
         }
+        
     };
 
     useEffect(() => {
@@ -82,8 +97,11 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                 durationMinutes: 60
             });
             showToast("Meeting logged successfully.", "success");
+            
             setShowMeetingForm(false);
+            
             fetchData();
+            
         } catch (e) {
             showToast("Failed to log meeting.", "error");
         } finally {
@@ -91,6 +109,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
         }
     };
 
+    
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -102,6 +121,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
 
         setActionLoading(true);
         const formData = new FormData();
+        
         formData.append('MatchId', matchId);
         formData.append('File', file);
 
@@ -204,7 +224,8 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Iteration History - Main Column */}
+
+                
                 <div className="lg:col-span-3 space-y-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-xl font-bold flex items-center gap-2 text-white">
@@ -305,6 +326,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                                             )}
                                         </div>
                                     </div>
+                                    
                                 </div>
                             ))
                         )}
@@ -351,7 +373,7 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                         )}
                     </div>
 
-                    {/* Meeting History Widget */}
+                    {/*  History Widgets implement */}
                     <div className="bg-[#0e1628] rounded-3xl border border-white/5 overflow-hidden">
                         <div className="p-4 bg-white/[0.02] border-b border-white/5 flex items-center justify-between">
                             <h4 className="font-bold text-sm flex items-center gap-2">
@@ -377,9 +399,9 @@ const AcademicPortal: React.FC<{ matchId: string, role: string }> = ({ matchId, 
                 </div>
             </div>
 
-            {/* --- Modals Section --- */}
+           
 
-            {/* Meeting Log Modal */}
+            {/* Log Modal */}
             {showMeetingForm && (
                 <div className="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
                     <div className="bg-[#0e1628] w-full max-w-md p-8 rounded-3xl border border-white/10 animate-reveal-slide">
