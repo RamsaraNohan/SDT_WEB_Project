@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+
 import { Activity, Users, CheckCircle, Clock } from 'lucide-react';
 import axios from 'axios';
 
@@ -37,7 +39,7 @@ const LeaderOverview: React.FC = () => {
 
     return (
         <div className="space-y-8 animate-reveal-fade">
-            {/* KPI Cards */}
+            
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <KPICard 
                     icon={<Activity className="text-emerald-400" />} 
@@ -66,7 +68,7 @@ const LeaderOverview: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Trends Chart */}
+               
                 <div className="glass-card p-8 rounded-3xl border border-white/5">
                     <h3 className="text-xl font-bold mb-6">Proposal Distribution</h3>
                     <div className="h-80">
@@ -84,9 +86,10 @@ const LeaderOverview: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Status Breakdown */}
+               
                 <div className="glass-card p-8 rounded-3xl border border-white/5">
                     <h3 className="text-xl font-bold mb-6">Module Health</h3>
+                    
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -105,6 +108,7 @@ const LeaderOverview: React.FC = () => {
                                 <Legend />
                             </PieChart>
                         </ResponsiveContainer>
+                        
                     </div>
                 </div>
             </div>
